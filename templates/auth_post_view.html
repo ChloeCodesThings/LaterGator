@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h1>Welcome {{username}}! What would you like to do?</h1>
+        <p>Please authorize the account you'd like to post with</p>
+
+<h2><a href="/loginpage">Facebook Page</a></h2>
+<p>Authorize posts to your Facebook Page</p>
+
+<h2><a href="/register">Facebook Profile</a></h2>
+<p>Authorize posts to your Facebook profile</p>
+
+<h2><a href="/register">Twitter</a></h2>
+<p>Authorize posts to your Twitter</p>
+
+{% endblock %}

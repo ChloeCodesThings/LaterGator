@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+  <title>LaterGator</title>
+</head>
+
+<body>
+  <h1>*~Later Gator!~* This is the nav bar</h1>
+  <hr>
+{% for flash in get_flashed_messages() %}
+  {{ flash }}
+{% endfor %}
+
+  {% block content %} put your content here {% endblock %}
+
+</body>
+</html>
