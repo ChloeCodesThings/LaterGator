@@ -39,7 +39,7 @@ def register_process():
 def show_login():
     return render_template("login.html")
 
-@app.route('/loginpage', methods=['POST'])
+@app.route('/authorize', methods=['POST'])
 def login_user():
     """Process login."""
 
@@ -71,19 +71,14 @@ def login_user():
 #     return render_template("auth_post_view.html", username=username)
 
 
-
-
-
-
-
-
-@app.route("/loggedinuser")
-def get_student():
-    """Show logged in user"""
-
 @app.route('/authorize')
 def show_authorize():
     return render_template("authorize.html")
+
+
+@app.route('/post')
+def show_post_form():
+    return render_template("post.html")
 
 
 @app.route('/fbbutton')
