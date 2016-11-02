@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h1>Set it, and forget it!</h1>
+        <br>
+        <form>
+            <p>Write your witty/thoughtful/deep/hilarious post here:</p>
+            <div>
+                <textarea rows="5" cols="100" name="userpost"></textarea>
+            </div>
+
+<b>Hover over this map if you're unsure what timezone to post to!</b>
+<br>
+
+<img src='/static/USAtext.jpg' height="500" width="600" onmouseover="this.src='/static/USAtext.jpg';" onmouseout="this.src='/static/USAnotext.jpg';" />
+
+
+<br>
+    <form>
+        Where are your adoring fans located?:
+        <select name="timezone">
+            <option value="pacific">Pacific</option>
+            <option value="mountain">Mountain</option>
+            <option value="central">Central</option>
+            <option value="eastern">Eastern</option>
+        <input type="submit" value="Get time suggestion">
+        </form>
+
+
+{% endblock %}
