@@ -3,28 +3,62 @@
 
     <h1>Set it, and forget it!</h1>
         <br>
-        <form>
-            <p>Write your witty/thoughtful/deep/hilarious post here:</p>
-            <div>
-                <textarea rows="5" cols="100" name="userpost"></textarea>
-            </div>
 
-<b>Hover over this map if you're unsure what timezone to post to!</b>
+<b>Hover over this map for some pro-tips!</b>
 <br>
 
-<img src='/static/USAnotext.jpg' height="500" width="600" onmouseover="this.src='/static/USAtext.jpg';" onmouseout="this.src='/static/USAnotext.jpg';" />
+<img src='/static/USAnotext.jpg' height="500" width="600" onmouseover="this.src='/static/USAchatty.jpg';" onmouseout="this.src='/static/USAnotext.jpg';" />
 
 
 <br>
-    <form>
-        Where are your adoring fans located?:
-        <select name="timezone">
-            <option value="pacific">Pacific</option>
-            <option value="mountain">Mountain</option>
-            <option value="central">Central</option>
-            <option value="eastern">Eastern</option>
-        <input type="submit" value="Get time suggestion">
-        </form>
+    <form action="/confirm" method="POST">
 
+        <p>Write your witty/thoughtful/deep/hilarious page post here:</p>
+                <textarea rows="5" cols="100" name="userpost" required></textarea>
+
+        <p>When would you like to post?:</p>
+                <select name="hour">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+
+                <select name="minute">
+                    <option value="00">00</option>
+                    <option value="15">15</option>
+                    <option value="30">30</option>
+                    <option value="45">45</option>
+                </select>
+
+                <select name="ampm">
+                    <option value="am">am</option>
+                    <option value="pm">pm</option>
+                </select>
+
+                <select name="timezone">
+                    <option value="Pacific">Pacific Time</option>
+                    <option value="Mountain">Mountain Time</option>
+                    <option value="Central">Central Time</option>
+                    <option value="Eastern">Eastern Time</option>
+                </select>
+
+                <input type="date" name="monthyear">
+
+<!--     Eventually use Chrono or moment? -->
+
+        <input type="submit" value="Set it, and forget it!">
+    </form>
 
 {% endblock %}
+
+
+input type="username" name="username" required>

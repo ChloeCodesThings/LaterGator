@@ -1,4 +1,11 @@
 from flask import Flask, render_template, request, flash, redirect, session
+import facebook
+
+def main():
+
+    access_token = "EAACEdEose0cBAHOB56Y9MUDXNKtyW2RDWyVDQE0YkdUyAKom6Nxb6c6ZCWCK8pvyePxO2H2rTs7xoZAHHShsJLmuExCbHHA44HJQkxAIZC796nnyL8MAZCXL15Cn0HwhRQsJDIRfOyu3vYJ11MUzPgPjujYeVlFEzoHUaEwZCv2DZB4HOAZBoFSGcI6cF38ZBCYZD"
+    api = facebook.GraphAPI(access_token)
+    msg = "testing"
 
 
 app = Flask(__name__)
@@ -47,6 +54,7 @@ def login_user():
     username = request.form.get("username")
     password = request.form.get("password")
 
+
     # user = User.query.filter_by(email=email).first()
 
     # if not user:
@@ -79,6 +87,21 @@ def show_authorize():
 @app.route('/post')
 def show_post_form():
     return render_template("post.html")
+
+@app.route('/confirm', methods=['POST'])
+def confirm_post():
+    hour = request.form.get("hour")
+    minute = request.form.get("minute")
+    timezone = request.form.get("timezone")
+    ampm = request.form.get("ampm")
+    userpost = request.form.get("userpost")
+    monthyear = request.form.get("monthyear")
+
+    return render_template("/confirm.html", hour=hour, minute=minute, timezone=timezone, ampm=ampm, userpost=userpost, monthyear=monthyear)
+
+@app.route('/myposts')
+def show_posts():
+    return render_template("myposts.html")
 
 
 @app.route('/fbbutton')

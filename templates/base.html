@@ -1,11 +1,13 @@
 <!doctype html>
 <html>
 <head>
+    <link rel="stylesheet" href-"./style.css">
   <title>LaterGator</title>
 </head>
 
 <body>
-  <h1>*~Later Gator!~* This is the nav bar</h1>
+    
+  <p>*~Later Gator!~* This is the nav bar. Options to <a href="/post">post</a> or view <a href="/myposts">pending</a> here</p>
   <hr>
 {% for flash in get_flashed_messages() %}
   {{ flash }}
