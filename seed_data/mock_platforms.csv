@@ -1,0 +1,4 @@
+platform_id,name,user_id,token,refresh_token
+1,facebook,1,faketoken123,fakerefresh123
+2,facebook,2,faketoken321,fakerefresh321
+3,facebook,3,faketoken111,fakerefresh111

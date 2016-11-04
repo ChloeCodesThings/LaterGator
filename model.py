@@ -10,14 +10,14 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    id = db.Column(db.Integer,
+    user_id = db.Column(db.Integer,
                     primary_key=True,
                     autoincrement=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(15), nullable=False)
 
 
-    # not necessary, but can add in
+    # not necessary, but can add in I guess
     # def __repr__(self):
     #     """Show user info"""
     #     return "<User id=%d Username=%s Password=%s>"\
@@ -29,14 +29,13 @@ class Platform(db.Model):
 
     __tablename__ = "platforms"
 
-    id = db.Column(db.Integer,
+    platform_id = db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
     name = db.Column(db.String(20), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    token = db.Column(db.Integer, nullable=False) #should this be a string since its so long?
-    refresh_token = db.Column(db.Integer, nullable=True) #should this be a string since its so long?
-
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    token = db.Column(db.String(200), nullable=False)
+    refresh_token = db.Column(db.String(200), nullable=True)
 
     user = db.relationship("User", backref="platforms")
 
@@ -46,13 +45,13 @@ class Post(db.Model):
 
     __tablename__ = "posts"
 
-    id = db.Column(db.Integer,
+    post_id = db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
     text = db.Column(db.String(800), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    platform_id = db.Column(db.Integer, db.ForeignKey('platforms.id'), nullable=False)
-    postdatetime = db.Column(db.Integer, nullable=False) #should this be a string or a integer? I think string... but its all numbers?
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    platform_id = db.Column(db.Integer, db.ForeignKey('platforms.platform_id'), nullable=False)
+    postdatetime = db.Column(db.String(30), nullable=False) #remember to change to datetime!
 
 
     user = db.relationship("User", backref="posts")
@@ -76,7 +75,7 @@ def connect_to_db(app):
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///latergator'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    # app.config['SQLALCHEMY_ECHO'] = True
+    app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)
 
