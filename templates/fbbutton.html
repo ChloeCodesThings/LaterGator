@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Facebook Login JavaScript Example</title>
-<meta charset="UTF-8">
+  <title>Facebook Login JavaScript Example</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
+  <meta charset="UTF-8">
 </head>
 <body>
 <script>
@@ -16,6 +17,11 @@
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
+      var params = {'access_token': response['authResponse']['accessToken'],
+                    'facebook_user_id': response['authResponse']['userID']};
+
+      $.post("/add_token", params, successhandler)
+
       testAPI();
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
@@ -41,7 +47,7 @@
 
   window.fbAsyncInit = function() {
   FB.init({
-    appId      : '229535457461476',
+    appId      : '241879092893779',
     cookie     : true,  // enable cookies to allow the server to access 
                         // the session
     xfbml      : true,  // parse social plugins on this page
@@ -62,13 +68,17 @@
 
   FB.getLoginStatus(function(response) {
     statusChangeCallback(response);
-    // var params: {'token': response['authResponse']['authToken']};
 
-    // $.post("/add_token", params, successhandler)
 
   });
 
   };
+
+  function successhandler(data) {
+    alert('Yay! You are logged into Facebook!')
+    location.href = '/post'
+
+  }
 
   // Load the SDK asynchronously
   (function(d, s, id) {
@@ -97,7 +107,7 @@
   the FB.login() function when clicked.
 -->
 
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+<fb:login-button scope="public_profile,email,manage_pages,publish_pages" onlogin="checkLoginState();">
 </fb:login-button>
 
 <div id="status">

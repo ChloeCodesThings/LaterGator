@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, flash, redirect, session
 import facebook
 
+from model import connect_to_db, db, User, Platform, Post
+
 def main():
 
     access_token = "EAACEdEose0cBAHOB56Y9MUDXNKtyW2RDWyVDQE0YkdUyAKom6Nxb6c6ZCWCK8pvyePxO2H2rTs7xoZAHHShsJLmuExCbHHA44HJQkxAIZC796nnyL8MAZCXL15Cn0HwhRQsJDIRfOyu3vYJ11MUzPgPjujYeVlFEzoHUaEwZCv2DZB4HOAZBoFSGcI6cF38ZBCYZD"
@@ -15,10 +17,10 @@ app.secret_key = "YOLO"
 
 @app.route('/')
 def index():
-    """Homepage login for LaterGator"""
+    """Homepage for LaterGator"""
     return render_template("homepage.html")
 
-@app.route('/register', methods=['GET'])
+@app.route('/register')
 def register_form():
     """Show register form to user"""
 
@@ -30,76 +32,90 @@ def register_process():
     """Processes registration."""
 
     # Get form variables
-    username = request.form["username"]
-    password = request.form["password"]
+    username = request.form.get("username")
+    password = request.form.get("password")
 
     new_user = User(username=username, password=password)
 
     db.session.add(new_user)
     db.session.commit()
 
-    flash("User %s added." % username)
+    session["user_id"] = new_user.user_id
+
     flash("Welcome %s! You are now have an account!" % username)
     return render_template("auth_post_view.html", username=username)
 
 
-
-
-#     db.session.add(new_user)
-#     db.session.commit()
-
-#     flash("User %s added." % email)
-#     return redirect("/")
-
-
-
-
-
-
-@app.route('/loginpage')
+@app.route('/login')
 def show_login():
     return render_template("login.html")
 
-@app.route('/authorize', methods=['POST'])
-def login_user():
+@app.route('/login', methods=['POST'])
+def login_process():
     """Process login."""
 
     # Get form variables
     username = request.form.get("username")
     password = request.form.get("password")
 
+    user = User.query.filter_by(username=username).first()
 
-    # user = User.query.filter_by(email=email).first()
+    if not user:
+        flash("No such user")
+        return redirect("/login")
 
-    # if not user:
-    #     flash("No such user")
-    #     return redirect("/login")
+    if user.password != password:
+        flash("Incorrect password")
+        return redirect("/login")
 
-    # if user.password != password:
-    #     flash("Incorrect password")
-    #     return redirect("/login")
+    session["user_id"] = user.user_id
 
-    # session["user_id"] = user.user_id
+    flash("You are now logged in")
+    return redirect("/authorize")
 
-    # flash("You are logged in, %s" % username)
-    return render_template("auth_post_view.html", username=username)
+@app.route('/logout')
+def logout_user():
+    if 'user_id' not in session:
+        flash("You are not logged in!")
+        return redirect('/login')
 
-# @app.route('/auth_post_view')
-# def show_options():
-#     """Show user options to auth, post, or view"""
-
-#     username = request..get("username")
-
-#     return render_template("auth_post_view.html", username=username)
-
+    del session["user_id"]
+    flash("Logged Out.")
+    return redirect("/")
 
 @app.route('/authorize')
-def show_authorize():
-    return render_template("authorize.html")
+def login_user():
+    """Process login."""
+
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/login')
+
+    return render_template("auth_post_view.html")
+
+@app.route('/add_token', methods=['POST'])
+def add_token():
+    """Add token to db"""
+    # To do: save to db
+    access_token = request.form.get("access_token")
+    facebook_user_id = request.form.get("facebook_user_id")
+
+
+    platform_info = Platform(user_id=session["user_id"], access_token=access_token, facebook_user_id=facebook_user_id)
+
+    db.session.add(platform_info)
+    db.session.commit()
+
+
+    return render_template("post.html")
 
 
 @app.route('/post')
 def show_post_form():
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/login')
+    
     return render_template("post.html")
 
 @app.route('/confirm', methods=['POST'])
@@ -115,6 +131,10 @@ def confirm_post():
 
 @app.route('/myposts')
 def show_posts():
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/login')
+
     return render_template("myposts.html")
 
 
@@ -123,7 +143,9 @@ def test():
     return render_template("fbbutton.html")
 
 
+
+
 if __name__ == "__main__":
     app.debug = True
-    # connect_to_db(app)
+    connect_to_db(app)
     app.run(host="0.0.0.0")

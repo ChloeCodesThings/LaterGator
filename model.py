@@ -18,10 +18,10 @@ class User(db.Model):
 
 
     # not necessary, but can add in I guess
-    # def __repr__(self):
-    #     """Show user info"""
-    #     return "<User id=%d Username=%s Password=%s>"\
-    #             %(self.id, self.username, self.password)
+    def __repr__(self):
+        """Show user info"""
+        return "<User id=%d Username=%s Password=%s>"\
+                %(self.user_id, self.username, self.password)
 
 
 class Platform(db.Model):
@@ -32,12 +32,18 @@ class Platform(db.Model):
     platform_id = db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
-    name = db.Column(db.String(20), nullable=False)
+    # name = db.Column(db.String(20), nullable=False) will add this when I add other platforms. Not needed for MVP
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    token = db.Column(db.String(200), nullable=False)
-    refresh_token = db.Column(db.String(200), nullable=True)
+    access_token = db.Column(db.String(200), nullable=False)
+    facebook_user_id = db.Column(db.String(200), nullable=False)
+    # expires_in = db.Column(db.String(10), nullable=False)
 
     user = db.relationship("User", backref="platforms")
+
+    def __repr__(self):
+        """Show platform info"""
+        return "<Platform name=%s User ID=%d>"\
+                %(self.platform_id, self.user_id)    
 
 
 class Post(db.Model):
@@ -56,6 +62,11 @@ class Post(db.Model):
 
     user = db.relationship("User", backref="posts")
     platform = db.relationship("Platform", backref="posts")
+
+    def __repr__(self):
+        """Show post info"""
+        return "<Post=%s User ID=%d>"\
+                %(self.text, self.user_id)  
 
 
 ##############################################################################
