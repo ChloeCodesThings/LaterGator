@@ -1,13 +1,8 @@
 from flask import Flask, render_template, request, flash, redirect, session
-import facebook
+
+from facebook import GraphAPI
 
 from model import connect_to_db, db, User, Platform, Post
-
-def main():
-
-    access_token = "EAACEdEose0cBAHOB56Y9MUDXNKtyW2RDWyVDQE0YkdUyAKom6Nxb6c6ZCWCK8pvyePxO2H2rTs7xoZAHHShsJLmuExCbHHA44HJQkxAIZC796nnyL8MAZCXL15Cn0HwhRQsJDIRfOyu3vYJ11MUzPgPjujYeVlFEzoHUaEwZCv2DZB4HOAZBoFSGcI6cF38ZBCYZD"
-    api = facebook.GraphAPI(access_token)
-    msg = "testing"
 
 
 app = Flask(__name__)
@@ -96,12 +91,18 @@ def login_user():
 @app.route('/add_token', methods=['POST'])
 def add_token():
     """Add token to db"""
-    # To do: save to db
+
     access_token = request.form.get("access_token")
     facebook_user_id = request.form.get("facebook_user_id")
 
+    platform_info = Platform.query.filter_by(facebook_user_id=facebook_user_id, user_id=session['user_id']).first()
 
-    platform_info = Platform(user_id=session["user_id"], access_token=access_token, facebook_user_id=facebook_user_id)
+    if not platform_info:
+        platform_info = Platform(user_id=session["user_id"], access_token=access_token, facebook_user_id=facebook_user_id)
+
+
+    else:
+        platform_info.access_token = access_token
 
     db.session.add(platform_info)
     db.session.commit()
@@ -120,14 +121,39 @@ def show_post_form():
 
 @app.route('/confirm', methods=['POST'])
 def confirm_post():
-    hour = request.form.get("hour")
-    minute = request.form.get("minute")
-    timezone = request.form.get("timezone")
-    ampm = request.form.get("ampm")
-    userpost = request.form.get("userpost")
-    monthyear = request.form.get("monthyear")
 
-    return render_template("/confirm.html", hour=hour, minute=minute, timezone=timezone, ampm=ampm, userpost=userpost, monthyear=monthyear)
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/login')
+
+
+    # hour = request.form.get("hour")
+    # minute = request.form.get("minute")
+    # timezone = request.form.get("timezone")
+    # ampm = request.form.get("ampm")
+    msg = request.form.get("userpost")
+    # monthyear = request.form.get("monthyear")
+
+    user_id = session["user_id"]
+    platform = Platform.query.filter_by(user_id=user_id).first()
+    print user_id
+    access_token = platform.access_token
+
+
+    api = GraphAPI(access_token)
+
+    pages = api.get_connections("me", "accounts")
+
+    page_token = pages["data"][1]['access_token']
+
+    page_api = GraphAPI(page_token)
+    page_api.put_wall_post(msg)
+
+    # status = api.put_wall_post(msg)
+
+
+    return render_template("/confirm.html")
+    # return render_template("/confirm.html", hour=hour, minute=minute, timezone=timezone, ampm=ampm, userpost=userpost, monthyear=monthyear)
 
 @app.route('/myposts')
 def show_posts():
