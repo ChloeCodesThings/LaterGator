@@ -4,6 +4,8 @@ from facebook import GraphAPI
 
 from model import connect_to_db, db, User, Platform, Post
 
+import time
+
 
 app = Flask(__name__)
 
@@ -146,8 +148,14 @@ def confirm_post():
 
     page_token = pages["data"][1]['access_token']
 
+
     page_api = GraphAPI(page_token)
-    page_api.put_wall_post(msg)
+
+    status = page_api.put_object(parent_object='me', connection_name='feed', scheduled_publish_time=int(time.time()) + 630, published=False,
+                 message=msg)
+
+    print status
+    # page_api.put_wall_post(msg)
 
     # status = api.put_wall_post(msg)
 
