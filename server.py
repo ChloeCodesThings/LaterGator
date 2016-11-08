@@ -118,6 +118,23 @@ def show_post_form():
     if 'user_id' not in session:
         flash("You need to be logged in for that!")
         return redirect('/login')
+
+
+    #dropdown to select page HELP!
+
+    # user_id = session["user_id"]
+    # platform = Platform.query.filter_by(user_id=user_id).first()
+  
+    # access_token = platform.access_token
+
+    # api = GraphAPI(access_token)
+
+    # pages = api.get_connections("me", "accounts")
+
+
+    # print pages["data"][1]['name']
+    # print pages["data"][0]['name']
+
     
     return render_template("post.html")
 
@@ -134,11 +151,12 @@ def confirm_post():
     # timezone = request.form.get("timezone")
     # ampm = request.form.get("ampm")
     msg = request.form.get("userpost")
+    scheduled_publish_time = request.form.get('publish_timestamp')
     # monthyear = request.form.get("monthyear")
 
     user_id = session["user_id"]
     platform = Platform.query.filter_by(user_id=user_id).first()
-    print user_id
+  
     access_token = platform.access_token
 
 
@@ -146,12 +164,13 @@ def confirm_post():
 
     pages = api.get_connections("me", "accounts")
 
-    page_token = pages["data"][1]['access_token']
+
+    page_token = pages["data"][1]['access_token'] #need to ask for which page... currently defaulted for Chloe
 
 
     page_api = GraphAPI(page_token)
 
-    status = page_api.put_object(parent_object='me', connection_name='feed', scheduled_publish_time=int(time.time()) + 630, published=False,
+    status = page_api.put_object(parent_object='me', connection_name='feed', scheduled_publish_time=scheduled_publish_time, published=False,
                  message=msg)
 
     print status

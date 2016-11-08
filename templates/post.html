@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<script src="https://rawgithub.com/wanasit/chrono/master/chrono.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
+
     <h1>Set it, and forget it!</h1>
         <br>
 
@@ -16,7 +19,7 @@
         <p>Write your witty/thoughtful/deep/hilarious page post here:</p>
                 <textarea rows="5" cols="100" name="userpost" required></textarea>
 
-        <p>When would you like to post?:</p>
+<!--         <p>When would you like to post?:</p>
                 <select name="hour">
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -45,13 +48,84 @@
                 </select>
 
                 <select name="timezone">
-                    <option value="Pacific">Pacific Time</option>
+                    <option value="-08:00">Pacific Time</option>
                     <option value="Mountain">Mountain Time</option>
                     <option value="Central">Central Time</option>
-                    <option value="Eastern">Eastern Time</option>
-                </select>
+                    <option value="-5">Eastern Time</option>
+                </select> -->
 
-                <input type="date" name="monthyear">
+
+               <!--  <input type="date" name="monthyear"> -->
+
+            <script type="text/javascript">
+                $(document).ready(function(){
+
+                    $('#time_textbox').on('keyup',function() {
+                        // x is whatever they typed in
+                        var time_from_textbox = $('#time_textbox').val();
+                        console.log('time_from_textbox', time_from_textbox);
+
+                        // y is goig to be the parsed chrono date (chrono.parseDate(x))
+                        var chrono_time = chrono.parseDate(time_from_textbox);
+                        console.log('chrono_time', chrono_time);
+
+                        // z = moment(y) format that to the value we want to actually send to facebook (seconds epoch value)
+                        var moment_time = moment(chrono_time);
+                        console.log('moment_time', moment_time);
+
+                        // // timezone difference is your current offset (moment.format('F')) - selected one (-5)
+                        // get my timezone offset:
+                        // var myTz = moment().format('Z'); // "-08:00"
+                        // myTz = myTz.split(':'); // ["-08","00"]
+                        // turn myTz into an array of integers, not strings
+
+                        // get selected timezone offset // $(selectthing).val() // "-08:00"
+                        // var selectedTz = // $(selectthing).val() // "-08:00" // "-08:00"
+                        // selectedTz = selectedTz.split(':'); // ["-08","00"]
+                        // turn selectedTz into an array of integers, not strings
+
+                        // now have 2 arrays of hours and minutes
+                        // subtract them to find the differences
+
+                        // var timezoneDifferenceInHours = myTz[0] - selectedTz[0];
+                        // var timezoneDifferenceInMinutes = myTz[1] - selectedTz[1];
+
+                        // var timezoneDifferenceInHours = 3;
+                        // var timezoneDifferenceInMinutes = 0;
+
+
+                        // var zz = z.add(timezoneDifferenceInHours,'hours').add(timezoneDifferenceInMinutes, 'minutes');
+
+                        var moment_unix = moment_time.format('X');
+
+                        console.log(moment_unix)
+
+
+
+                        // console.log(zz.format());
+
+                        // var final_value = zz.format('X');
+
+                        // var z2 = moment(y);
+                        // console.log('z2',z2.add(timezoneDifference,'hours').format());
+                        // console.log('zz', zz)
+
+
+
+                        // #get timeszone from moment
+
+
+                        // setting our final time value (seconds since the epoch) to our hidden input
+                        $('#hidden_time').val(moment_unix);
+
+                    });
+                    // When text area has key pressed, update 
+
+                })
+            </script>
+                <input id="hidden_time" type="hidden" name="publish_timestamp">
+
+    <input id="time_textbox" rows="5" cols="100"></input>
 
 <!--     Eventually use Chrono or moment? -->
 

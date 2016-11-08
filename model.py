@@ -58,6 +58,7 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     platform_id = db.Column(db.Integer, db.ForeignKey('platforms.platform_id'), nullable=False)
     postdatetime = db.Column(db.String(30), nullable=False) #remember to change to datetime!
+    #add post id as well! could update or delete it too...
 
 
     user = db.relationship("User", backref="posts")
