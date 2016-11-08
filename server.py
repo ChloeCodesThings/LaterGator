@@ -122,21 +122,16 @@ def show_post_form():
 
     #dropdown to select page HELP!
 
-    # user_id = session["user_id"]
-    # platform = Platform.query.filter_by(user_id=user_id).first()
+    user_id = session["user_id"]
+    platform = Platform.query.filter_by(user_id=user_id).first()
   
-    # access_token = platform.access_token
+    access_token = platform.access_token
 
-    # api = GraphAPI(access_token)
+    api = GraphAPI(access_token)
 
-    # pages = api.get_connections("me", "accounts")
-
-
-    # print pages["data"][1]['name']
-    # print pages["data"][0]['name']
-
+    page_response = api.get_connections("me", "accounts")
     
-    return render_template("post.html")
+    return render_template("post.html", pages=page_response["data"])
 
 @app.route('/confirm', methods=['POST'])
 def confirm_post():
@@ -146,13 +141,10 @@ def confirm_post():
         return redirect('/login')
 
 
-    # hour = request.form.get("hour")
-    # minute = request.form.get("minute")
-    # timezone = request.form.get("timezone")
-    # ampm = request.form.get("ampm")
+
+    page_id = request.form.get("page_id")
     msg = request.form.get("userpost")
     scheduled_publish_time = request.form.get('publish_timestamp')
-    # monthyear = request.form.get("monthyear")
 
     user_id = session["user_id"]
     platform = Platform.query.filter_by(user_id=user_id).first()
@@ -162,10 +154,19 @@ def confirm_post():
 
     api = GraphAPI(access_token)
 
-    pages = api.get_connections("me", "accounts")
+
+    access_token_response = api.get_object(id=page_id, fields='access_token')
+
+    page_token = access_token_response['access_token']
 
 
-    page_token = pages["data"][1]['access_token'] #need to ask for which page... currently defaulted for Chloe
+    # ***Need to test later to see if this works for useres other than Admin***
+
+    # pages = api.get_connections("me", "accounts")
+
+    # for page in pages["data"]:
+        # if page_id == page['id']:
+            # page_token = page['access_token']
 
 
     page_api = GraphAPI(page_token)
