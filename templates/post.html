@@ -49,15 +49,20 @@
 
                         // setting our final time value (seconds since the epoch) to our hidden input
                         $('#hidden_time').val(moment_unix);
+                        $('#time_example').html(chrono_time);
+
 
                     });
-                    // When text area has key pressed, update 
 
                 })
             </script>
                 <input id="hidden_time" type="hidden" name="publish_timestamp">
-
+                
+    <p>What time would you like to post this?</p>
+    <p>Example: "Tomorrow at 5pm EST"</p>
     <input id="time_textbox" rows="5" cols="100"></input>
+    <p>Is this the time you'd like to post at?</p>
+    <p id="time_example"></p>
 
         <input type="submit" value="Set it, and forget it!">
     </form>

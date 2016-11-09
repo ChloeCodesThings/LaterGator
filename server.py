@@ -24,7 +24,7 @@ def register_form():
     return render_template("register.html")
 
 
-@app.route('/register', methods=['POST'])
+@app.route('/authorize_new_user', methods=['POST'])
 def register_process():
     """Processes registration."""
 
@@ -32,14 +32,17 @@ def register_process():
     username = request.form.get("username")
     password = request.form.get("password")
 
+    #Create new user
     new_user = User(username=username, password=password)
 
+    #Add new user to database
     db.session.add(new_user)
     db.session.commit()
 
+    #Creates session with current user
     session["user_id"] = new_user.user_id
 
-    flash("Welcome %s! You are now have an account!" % username)
+    flash("You now have an account %s!" % username)
     return render_template("auth_post_view.html", username=username)
 
 
@@ -47,7 +50,7 @@ def register_process():
 def show_login():
     return render_template("login.html")
 
-@app.route('/login', methods=['POST'])
+@app.route('/authorize', methods=['POST'])
 def login_process():
     """Process login."""
 
@@ -55,6 +58,7 @@ def login_process():
     username = request.form.get("username")
     password = request.form.get("password")
 
+    #Checks if user is in database
     user = User.query.filter_by(username=username).first()
 
     if not user:
@@ -68,27 +72,17 @@ def login_process():
     session["user_id"] = user.user_id
 
     flash("You are now logged in")
-    return redirect("/authorize")
+    return render_template("auth_post_view.html", username=username)
 
 @app.route('/logout')
 def logout_user():
-    if 'user_id' not in session:
-        flash("You are not logged in!")
-        return redirect('/login')
 
     del session["user_id"]
-    flash("Logged Out.")
+    flash("You have been logged out- ttfn!")
     return redirect("/")
 
-@app.route('/authorize')
-def login_user():
-    """Process login."""
 
-    if 'user_id' not in session:
-        flash("You need to be logged in for that!")
-        return redirect('/login')
 
-    return render_template("auth_post_view.html")
 
 @app.route('/add_token', methods=['POST'])
 def add_token():
@@ -110,7 +104,7 @@ def add_token():
     db.session.commit()
 
 
-    return render_template("post.html")
+    return render_template("post.html") #necessary?
 
 
 @app.route('/post')
@@ -118,9 +112,6 @@ def show_post_form():
     if 'user_id' not in session:
         flash("You need to be logged in for that!")
         return redirect('/login')
-
-
-    #dropdown to select page HELP!
 
     user_id = session["user_id"]
     platform = Platform.query.filter_by(user_id=user_id).first()
@@ -171,10 +162,10 @@ def confirm_post():
 
     page_api = GraphAPI(page_token)
 
-    status = page_api.put_object(parent_object='me', connection_name='feed', scheduled_publish_time=scheduled_publish_time, published=False,
+    page_api.put_object(parent_object='me', connection_name='feed', scheduled_publish_time=scheduled_publish_time, published=False,
                  message=msg)
 
-    print status
+    # print status
     # page_api.put_wall_post(msg)
 
     # status = api.put_wall_post(msg)
