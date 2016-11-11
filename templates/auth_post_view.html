@@ -12,7 +12,7 @@
   function statusChangeCallback(response) {
     $('#post_button').hide();
     console.log('statusChangeCallback');
-    console.log('response', response);
+
 
 
     if (response.status === 'connected') {
@@ -77,8 +77,6 @@
   function successhandler(data) {
     $('#fb_login_button').hide();
     $('#post_button').show();
-    // alert('Yay! You are logged into Facebook!')
-    // location.href = '/post'
 
   }
 

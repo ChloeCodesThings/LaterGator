@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <h1>Your post will be sent at {{hour}}:{{minute}}{{ampm}} {{timezone}} time on {{monthyear}}! </h1>
+    <h1>Your post will be sent <u>{{time_to_show}}</u>! </h1>
 
     <img src="static/goodjob.jpg">
 
     <p>Maybe we'll text you when that happens? That would be cool...</p>
 
     <p>Click <a href="/myposts">here</a> to see your pending/posted statuses</p>
+
 
 {% endblock %}

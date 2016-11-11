@@ -32,18 +32,27 @@ def register_process():
     username = request.form.get("username")
     password = request.form.get("password")
 
-    #Create new user
-    new_user = User(username=username, password=password)
+    user = User.query.filter_by(username=username).first()
 
-    #Add new user to database
-    db.session.add(new_user)
-    db.session.commit()
+    if not user:
 
-    #Creates session with current user
-    session["user_id"] = new_user.user_id
+        #Create new user
+        new_user = User(username=username, password=password)
 
-    flash("You now have an account %s!" % username)
-    return render_template("auth_post_view.html", username=username)
+        #Add new user to database
+        db.session.add(new_user)
+        db.session.commit()
+
+        #Creates session with current user
+        session["user_id"] = new_user.user_id
+
+        flash("You now have an account %s!" % username)
+        return render_template("auth_post_view.html", username=username)
+
+    if user.username:
+        flash("Please choose another username! That one is taken")
+        return redirect("/register")
+
 
 
 @app.route('/login')
@@ -119,7 +128,7 @@ def show_post_form():
     access_token = platform.access_token
 
     api = GraphAPI(access_token)
-
+    
     page_response = api.get_connections("me", "accounts")
     
     return render_template("post.html", pages=page_response["data"])
@@ -136,6 +145,8 @@ def confirm_post():
     page_id = request.form.get("page_id")
     msg = request.form.get("userpost")
     scheduled_publish_time = request.form.get('publish_timestamp')
+    time_to_show = request.form.get('time_to_show')
+    user_input_time = '"time_to_show"'
 
     user_id = session["user_id"]
     platform = Platform.query.filter_by(user_id=user_id).first()
@@ -162,6 +173,9 @@ def confirm_post():
 
     page_api = GraphAPI(page_token)
 
+    # page_posts = page_api.get_connections("me", "posts")
+
+
     page_api.put_object(parent_object='me', connection_name='feed', scheduled_publish_time=scheduled_publish_time, published=False,
                  message=msg)
 
@@ -171,7 +185,7 @@ def confirm_post():
     # status = api.put_wall_post(msg)
 
 
-    return render_template("/confirm.html")
+    return render_template("/confirm.html", time_to_show=time_to_show)
     # return render_template("/confirm.html", hour=hour, minute=minute, timezone=timezone, ampm=ampm, userpost=userpost, monthyear=monthyear)
 
 @app.route('/myposts')
@@ -180,7 +194,40 @@ def show_posts():
         flash("You need to be logged in for that!")
         return redirect('/login')
 
-    return render_template("myposts.html")
+    user_id = session["user_id"]
+    platform = Platform.query.filter_by(user_id=user_id).first()
+  
+    access_token = platform.access_token
+    api = GraphAPI(access_token)
+    
+    page_response = api.get_connections("me", "accounts")
+
+    pages = page_response["data"]
+
+    all_posts_regardless_of_page = []
+    for page in pages:
+        current_page_id = str(page['id']) #getting current page id
+
+        print current_page_id
+        #getting page's posts
+        post_rsp=api.get_connections(id=current_page_id, connection_name='promotable_posts')
+
+        
+
+        for post in post_rsp['data']:
+            # post_ids.append(post['id'])
+            current_post_id = post['id']
+            post_info = api.get_object(id=current_post_id, fields='is_published,message')
+
+            all_posts_regardless_of_page.append(post_info)
+
+        # post_ids = [ p['id'] for p in  post_rsp['data']] #getting post ids
+
+
+
+
+
+    return render_template("myposts.html", posts=all_posts_regardless_of_page)
 
 
 @app.route('/fbbutton')
