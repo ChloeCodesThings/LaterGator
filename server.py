@@ -205,6 +205,9 @@ def show_posts():
     pages = page_response["data"]
 
     all_posts_regardless_of_page = []
+    published_posts = []
+    unpublished_posts = []
+
     for page in pages:
         current_page_id = str(page['id']) #getting current page id
 
@@ -219,7 +222,20 @@ def show_posts():
             current_post_id = post['id']
             post_info = api.get_object(id=current_post_id, fields='is_published,message')
 
-            all_posts_regardless_of_page.append(post_info)
+            if post_info['is_published']:
+                published_posts.append(post_info)
+            else:
+                unpublished_posts.append(post_info)
+
+
+
+
+            # for each_post in all_posts_regardless_of_page:
+            #     message = each_post['message']
+            #     is_published = each_post['is_published']
+
+
+
 
         # post_ids = [ p['id'] for p in  post_rsp['data']] #getting post ids
 
@@ -227,7 +243,7 @@ def show_posts():
 
 
 
-    return render_template("myposts.html", posts=all_posts_regardless_of_page)
+    return render_template("myposts.html", published_posts=published_posts, unpublished_posts=unpublished_posts)
 
 
 @app.route('/fbbutton')

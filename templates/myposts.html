@@ -2,13 +2,24 @@
 {% block content %}
 
     <h3>Pending</h3>
-    <p>"Wow! Chloe is so cool" to be posted at 5pm on Saturday</p>
+    <ul>
+    {% for post in unpublished_posts %}
+        <br>
+            <li>{{post['message']}}</li>
+    {% endfor %}
+    </ul>
+
 
     <h3>Posted</h3>
-    <p>"Chloe is just so cool- wow" was posted at 4pm on Wednesday</p>
 
-    {% for post in posts %}
-    {{post}}
+    {% for post in published_posts %}
+        {{post['message']}}
     {% endfor %}
+
+
+
+<!--     {% for message in messages %}
+    {{message}}
+    {% endfor %} -->
 
 {% endblock %}
