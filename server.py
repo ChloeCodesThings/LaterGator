@@ -10,12 +10,21 @@ import time
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
-app.secret_key = "YOLO"
+app.secret_key = "CC89"
 
 @app.route('/')
 def index():
     """Homepage for LaterGator"""
-    return render_template("homepage.html")
+
+    if 'user_id' in session:
+        user_id = session["user_id"]
+
+        user = User.query.filter_by(user_id=user_id).first()
+        username = user.username
+        return render_template("logged_in_page.html", username=username)
+
+    else:
+        return render_template("homepage.html")
 
 @app.route('/register')
 def register_form():
@@ -34,7 +43,11 @@ def register_process():
 
     user = User.query.filter_by(username=username).first()
 
-    if not user:
+    if user:
+        flash("Please choose another username! That one is taken")
+        return redirect("/register")
+
+    else:
 
         #Create new user
         new_user = User(username=username, password=password)
@@ -47,12 +60,7 @@ def register_process():
         session["user_id"] = new_user.user_id
 
         flash("You now have an account %s!" % username)
-        return render_template("auth_post_view.html", username=username)
-
-    if user.username:
-        flash("Please choose another username! That one is taken")
-        return redirect("/register")
-
+        return redirect("/")
 
 
 @app.route('/login')
@@ -74,20 +82,24 @@ def login_process():
         flash("No such user")
         return redirect("/login")
 
-    if user.password != password:
+    elif user.password != password:
         flash("Incorrect password")
         return redirect("/login")
 
-    session["user_id"] = user.user_id
-
-    flash("You are now logged in")
-    return render_template("auth_post_view.html", username=username)
+    else:
+        session["user_id"] = user.user_id
+        flash("You are now logged in")
+        return redirect("/")
 
 @app.route('/logout')
 def logout_user():
 
-    del session["user_id"]
-    flash("You have been logged out- ttfn!")
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+    else:
+        del session["user_id"]
+        flash("You have been logged out- ttfn!")
+
     return redirect("/")
 
 
@@ -113,14 +125,14 @@ def add_token():
     db.session.commit()
 
 
-    return render_template("post.html") #necessary?
+    return "success"
 
 
 @app.route('/post')
 def show_post_form():
     if 'user_id' not in session:
         flash("You need to be logged in for that!")
-        return redirect('/login')
+        return redirect('/')
 
     user_id = session["user_id"]
     platform = Platform.query.filter_by(user_id=user_id).first()
@@ -161,32 +173,19 @@ def confirm_post():
 
     page_token = access_token_response['access_token']
 
-
-    # ***Need to test later to see if this works for useres other than Admin***
-
-    # pages = api.get_connections("me", "accounts")
-
-    # for page in pages["data"]:
-        # if page_id == page['id']:
-            # page_token = page['access_token']
-
-
     page_api = GraphAPI(page_token)
-
-    # page_posts = page_api.get_connections("me", "posts")
-
 
     page_api.put_object(parent_object='me', connection_name='feed', scheduled_publish_time=scheduled_publish_time, published=False,
                  message=msg)
 
-    # print status
-    # page_api.put_wall_post(msg)
+    #insert response['post_id'] into post DB
 
-    # status = api.put_wall_post(msg)
-
+    #return redirect("/posts/{ID}")
 
     return render_template("/confirm.html", time_to_show=time_to_show)
     # return render_template("/confirm.html", hour=hour, minute=minute, timezone=timezone, ampm=ampm, userpost=userpost, monthyear=monthyear)
+
+
 
 @app.route('/myposts')
 def show_posts():
@@ -211,21 +210,17 @@ def show_posts():
     for page in pages:
         current_page_id = str(page['id']) #getting current page id
 
-        print current_page_id
         #getting page's posts
-        post_rsp=api.get_connections(id=current_page_id, connection_name='promotable_posts')
-
         
+        post_rsp=api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message')
 
         for post in post_rsp['data']:
             # post_ids.append(post['id'])
-            current_post_id = post['id']
-            post_info = api.get_object(id=current_post_id, fields='is_published,message')
 
-            if post_info['is_published']:
-                published_posts.append(post_info)
+            if post['is_published']:
+                published_posts.append(post)
             else:
-                unpublished_posts.append(post_info)
+                unpublished_posts.append(post)
 
 
 

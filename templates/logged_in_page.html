@@ -10,6 +10,7 @@
 <script>
 
   function statusChangeCallback(response) {
+
     $('#post_button').hide();
     console.log('statusChangeCallback');
 
@@ -20,9 +21,10 @@
       var params = {'access_token': response['authResponse']['accessToken'],
                     'facebook_user_id': response['authResponse']['userID']};
 
-      $.post("/add_token", params, successhandler)
+      $.post('/add_token', params, tokenSuccessHandler)
 
       testAPI();
+
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
       document.getElementById('status').innerHTML = 'Please log ' +
@@ -39,42 +41,36 @@
   // Button.  See the onlogin handler attached to it in the sample
   // code below.
   function checkLoginState() {
-    FB.getLoginStatus(function(response) {
-      statusChangeCallback(response);
-
-    });
+    FB.getLoginStatus(statusChangeCallback);
   }
 
   window.fbAsyncInit = function() {
-  FB.init({
-    appId      : '241879092893779',
-    cookie     : true,  // enable cookies to allow the server to access 
-                        // the session
-    xfbml      : true,  // parse social plugins on this page
-    version    : 'v2.5' // use graph api version 2.5
-  });
+    FB.init({
+      appId      : '241879092893779',
+      cookie     : true,  // enable cookies to allow the server to access 
+                          // the session
+      xfbml      : true,  // parse social plugins on this page
+      version    : 'v2.5' // use graph api version 2.5
+    });
 
-  // Now that we've initialized the JavaScript SDK, we call 
-  // FB.getLoginStatus().  This function gets the state of the
-  // person visiting this page and can return one of three states to
-  // the callback you provide.  They can be:
-  //
-  // 1. Logged into your app ('connected')
-  // 2. Logged into Facebook, but not your app ('not_authorized')
-  // 3. Not logged into Facebook and can't tell if they are logged into
-  //    your app or not.
-  //
-  // These three cases are handled in the callback function.
+    // Now that we've initialized the JavaScript SDK, we call 
+    // FB.getLoginStatus().  This function gets the state of the
+    // person visiting this page and can return one of three states to
+    // the callback you provide.  They can be:
+    //
+    // 1. Logged into your app ('connected')
+    // 2. Logged into Facebook, but not your app ('not_authorized')
+    // 3. Not logged into Facebook and can't tell if they are logged into
+    //    your app or not.
+    //
+    // These three cases are handled in the callback function.
 
-  FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
+    FB.getLoginStatus(statusChangeCallback);
 
-
-  });
 
   };
 
-  function successhandler(data) {
+  function tokenSuccessHandler(data) {
     $('#fb_login_button').hide();
     $('#post_button').show();
 
@@ -118,10 +114,12 @@
 <div id="status">
 </div>
 
-<form action="/post">
-<input type="submit" id="post_button" value="Let's post to my pages!">
 
-</form>
+<a href ="/post" id="post_button">Let's post to my pages!</a>
+<!-- (This will be a button) -->
+
+
+
 
 
 
