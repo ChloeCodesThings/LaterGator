@@ -302,9 +302,11 @@ def add_post_to_db():
     scheduled_publish_time = request.form.get('publish_timestamp')
     platform = Platform.query.filter_by(user_id=user_id).first()
     platform_id = platform.platform_id
+    time_to_show = request.form.get('time_to_show')
 
 
     new_post = Post(msg=msg, post_datetime=scheduled_publish_time, user_id=session["user_id"], platform_id=platform_id)
+    
 
         #Add new user to database
     db.session.add(new_post)
@@ -328,7 +330,7 @@ def add_post_to_db():
 #insert into db
 #show pending
 
-    return render_template("/confirm_profile.html")
+    return render_template("/confirm_profile.html", time_to_show=time_to_show)
 
 
 
