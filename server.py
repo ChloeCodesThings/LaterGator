@@ -128,7 +128,9 @@ def add_token():
     return "success"
 
 
-@app.route('/post')
+
+
+@app.route('/post_pages')
 def show_post_form():
     if 'user_id' not in session:
         flash("You need to be logged in for that!")
@@ -143,16 +145,34 @@ def show_post_form():
     
     page_response = api.get_connections("me", "accounts")
     
-    return render_template("post.html", pages=page_response["data"])
+    return render_template("post_pages.html", pages=page_response["data"])
 
-@app.route('/confirm', methods=['POST'])
+
+@app.route('/post_profile')
+def show_post_form_profile():
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/')
+
+    user_id = session["user_id"]
+    platform = Platform.query.filter_by(user_id=user_id).first()
+  
+    access_token = platform.access_token
+    user = User.query.filter_by(user_id=user_id).first()
+    username = user.username
+        
+    return render_template("post_profile.html", username=username)
+
+
+
+
+
+@app.route('/confirm_pages', methods=['POST'])
 def confirm_post():
 
     if 'user_id' not in session:
         flash("You need to be logged in for that!")
         return redirect('/login')
-
-
 
     page_id = request.form.get("page_id")
     msg = request.form.get("userpost")
@@ -182,23 +202,6 @@ def confirm_post():
 
     #return redirect("/posts/{ID}")
 
-    return render_template("/confirm.html", time_to_show=time_to_show)
-    # return render_template("/confirm.html", hour=hour, minute=minute, timezone=timezone, ampm=ampm, userpost=userpost, monthyear=monthyear)
-
-
-
-@app.route('/myposts')
-def show_posts():
-    if 'user_id' not in session:
-        flash("You need to be logged in for that!")
-        return redirect('/login')
-
-    user_id = session["user_id"]
-    platform = Platform.query.filter_by(user_id=user_id).first()
-  
-    access_token = platform.access_token
-    api = GraphAPI(access_token)
-    
     page_response = api.get_connections("me", "accounts")
 
     pages = page_response["data"]
@@ -212,7 +215,7 @@ def show_posts():
 
         #getting page's posts
         
-        post_rsp=api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message')
+        post_rsp=api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message,id')
 
         for post in post_rsp['data']:
             # post_ids.append(post['id'])
@@ -223,27 +226,109 @@ def show_posts():
                 unpublished_posts.append(post)
 
 
-
-
-            # for each_post in all_posts_regardless_of_page:
-            #     message = each_post['message']
-            #     is_published = each_post['is_published']
+    return render_template("/confirm_page.html", time_to_show=time_to_show, published_posts=published_posts, unpublished_posts=unpublished_posts)
+    # return render_template("/confirm.html", hour=hour, minute=minute, timezone=timezone, ampm=ampm, userpost=userpost, monthyear=monthyear)
 
 
 
+# @app.route('/myposts')
+# def show_posts():
+#     if 'user_id' not in session:
+#         flash("You need to be logged in for that!")
+#         return redirect('/login')
 
-        # post_ids = [ p['id'] for p in  post_rsp['data']] #getting post ids
+#     user_id = session["user_id"]
+#     platform = Platform.query.filter_by(user_id=user_id).first()
+  
+#     access_token = platform.access_token
+#     api = GraphAPI(access_token)
+    
+#     page_response = api.get_connections("me", "accounts")
+
+#     pages = page_response["data"]
+
+#     all_posts_regardless_of_page = []
+#     published_posts = []
+#     unpublished_posts = []
+
+#     for page in pages:
+#         current_page_id = str(page['id']) #getting current page id
+
+#         #getting page's posts
+        
+#         post_rsp=api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message')
+
+#         for post in post_rsp['data']:
+#             # post_ids.append(post['id'])
+
+#             if post['is_published']:
+#                 published_posts.append(post)
+#             else:
+#                 unpublished_posts.append(post)
+
+
+
+
+#             # for each_post in all_posts_regardless_of_page:
+#             #     message = each_post['message']
+#             #     is_published = each_post['is_published']
+
+
+
+
+#         # post_ids = [ p['id'] for p in  post_rsp['data']] #getting post ids
 
 
 
 
 
-    return render_template("myposts.html", published_posts=published_posts, unpublished_posts=unpublished_posts)
+#     return render_template("myposts.html", published_posts=published_posts, unpublished_posts=unpublished_posts)
 
 
-@app.route('/fbbutton')
-def test():
-    return render_template("fbbutton.html")
+# @app.route('/fbbutton')
+# def test():
+#     return render_template("fbbutton.html")
+
+@app.route('/confirm_profile', methods=['POST'])
+def add_post_to_db():
+    """Add post info to db"""
+
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/login')
+
+    user_id = session["user_id"]
+    msg = request.form.get("userpost")
+    scheduled_publish_time = request.form.get('publish_timestamp')
+    platform = Platform.query.filter_by(user_id=user_id).first()
+    platform_id = platform.platform_id
+
+
+    new_post = Post(msg=msg, post_datetime=scheduled_publish_time, user_id=session["user_id"], platform_id=platform_id)
+
+        #Add new user to database
+    db.session.add(new_post)
+    db.session.commit()
+
+
+
+
+    # ***** THIS POSTS TO FACEBOOK ******
+
+    # user_id = session["user_id"]
+    # platform = Platform.query.filter_by(user_id=user_id).first()
+  
+    # access_token = platform.access_token
+
+
+    # api = GraphAPI(access_token)
+
+    # api.put_object(parent_object='me', connection_name='feed', message=msg)
+
+#insert into db
+#show pending
+
+    return render_template("/confirm_profile.html")
 
 
 

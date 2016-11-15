@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<script src="https://rawgithub.com/wanasit/chrono/master/chrono.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
+
+    <h1>Set it, and forget it!</h1>
+        <br>
+
+<b>Hover over this map for some pro-tips!</b>
+<br>
+
+<img src='/static/USAnotext.jpg' height="500" width="600" onmouseover="this.src='/static/USAchatty.jpg';" onmouseout="this.src='/static/USAnotext.jpg';" />
+
+
+<br>
+    <form action="/confirm_pages" method="POST">
+
+        <select name="page_id">
+            {% for page in pages %}
+                <option value="{{ page['id'] }}">{{ page['name'] }}</option>
+            {% endfor %}
+        </select>
+
+        <p>Write your witty/thoughtful/deep/hilarious page post here:</p>
+                <textarea rows="5" cols="100" name="userpost" required="true"></textarea>
+
+
+            <script type="text/javascript">
+                $(document).ready(function(){
+
+                    $('#time_textbox').on('keyup',function() {
+                        // time_from_textbox is whatever they typed in
+                        var time_from_textbox = $('#time_textbox').val();
+                        console.log('time_from_textbox', time_from_textbox);
+
+                        // Parsed chrono date (chrono.parseDate(x))
+                        var chrono_time = chrono.parseDate(time_from_textbox);
+                        console.log('chrono_time', chrono_time);
+
+                        // format that to the value we want to actually send to facebook (seconds epoch value)
+                        var moment_time = moment(chrono_time);
+                        console.log('moment_time', moment_time);
+
+                        var moment_unix = moment_time.format('X');
+
+                        console.log(moment_unix)
+
+
+                        // setting our final time value (seconds since the epoch) to our hidden input
+                        $('#hidden_time').val(moment_unix);
+                        $('#time_example').html(chrono_time);
+
+
+                    });
+
+                })
+            </script>
+                <input id="hidden_time" type="hidden" name="publish_timestamp">
+<!--                 <input id="hidden_time_textbox" type="hidden" name="word_time_format">
+ -->                
+    <p>What time would you like to post this?</p>
+    <p>Example: "Tomorrow at 5pm EST"</p>
+    <input id="time_textbox" name="time_to_show" rows="5" cols="100">
+    <p>Is this the time you'd like to post at?</p>
+    <p id="time_example"></p>
+
+        <input type="submit" value="Set it, and forget it!">
+    </form>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h1>Your post will be sent <u>{{time_to_show}}</u>! </h1>
+
+    <img src="static/goodjob.jpg">
+
+    <h3>Pending posts on your Facebook pages:</h3>
+    <ul>
+    {% for post in unpublished_posts %}
+        <br>
+            <li>{{post['message']}}</li>
+    {% endfor %}
+    </ul>
+
+
+{% endblock %}

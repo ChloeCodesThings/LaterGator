@@ -1,17 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <h1>Welcome {{username}}! What would you like to do?</h1>
-        <p>Please authorize the account you'd like to post with</p>
-
-<h2>Facebook Page</h2>
-<p>Authorize posts to your Facebook Page</p>
+    <h1>Welcome {{username}}!</h1>
+<h2 id="status"></h2>
 
 <script>
 
   function statusChangeCallback(response) {
 
-    $('#post_button').hide();
+    $('#post_pages_button').hide();
+    $('#post_profile_button').hide();
     console.log('statusChangeCallback');
 
 
@@ -27,8 +25,8 @@
 
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into this app.';
+      document.getElementById('status').innerHTML = 'Please authorize LatorGator to ' +
+        'post to Facebook for you.';
     } else {
       // The person is not logged into Facebook, so we're not sure if
       // they are logged into this app or not.
@@ -72,7 +70,8 @@
 
   function tokenSuccessHandler(data) {
     $('#fb_login_button').hide();
-    $('#post_button').show();
+    $('#post_pages_button').show();
+    $('#post_profile_button').show();
 
   }
 
@@ -111,22 +110,19 @@
 <fb:login-button id="fb_login_button" scope="public_profile,email,manage_pages,publish_pages,publish_actions" onlogin="checkLoginState();">
 </fb:login-button>
 
-<div id="status">
-</div>
+<!-- <div id="status">
+</div> -->
 
 
-<a href ="/post" id="post_button">Let's post to my pages!</a>
+<a href ="/post_pages" id="post_pages_button">Let's post to my pages!</a>
 <!-- (This will be a button) -->
 
 
 
 
 
+<!-- # make a button -->
+<a href ="/post_profile" id="post_profile_button">Let's post to my profile!</a>
 
-<h2>Facebook Profile</h2>
-<p><b>(Coming soon!)</b> Authorize posts to your Facebook profile</p>
-
-<h2>Twitter</h2>
-<p><b>(Coming soon!)</b> Authorize posts to your Twitter</p>
 
 {% endblock %}

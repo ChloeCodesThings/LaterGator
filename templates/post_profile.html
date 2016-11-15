@@ -7,6 +7,8 @@
     <h1>Set it, and forget it!</h1>
         <br>
 
+    <p>Let's post to your profile, {{username}}!</p>
+
 <b>Hover over this map for some pro-tips!</b>
 <br>
 
@@ -14,13 +16,7 @@
 
 
 <br>
-    <form action="/confirm" method="POST">
-
-        <select name="page_id">
-            {% for page in pages %}
-                <option value="{{ page['id'] }}">{{ page['name'] }}</option>
-            {% endfor %}
-        </select>
+    <form action='/confirm_profile' method="POST">
 
         <p>Write your witty/thoughtful/deep/hilarious page post here:</p>
                 <textarea rows="5" cols="100" name="userpost" required="true"></textarea>
