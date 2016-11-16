@@ -299,7 +299,7 @@ def add_post_to_db():
 
     user_id = session["user_id"]
     msg = request.form.get("userpost")
-    scheduled_publish_time = request.form.get('publish_timestamp')
+    scheduled_publish_time = int(request.form.get('publish_timestamp'))
     platform = Platform.query.filter_by(user_id=user_id).first()
     platform_id = platform.platform_id
     time_to_show = request.form.get('time_to_show')

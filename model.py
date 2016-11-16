@@ -55,7 +55,7 @@ class Post(db.Model):
                         primary_key=True,
                         autoincrement=True)
     msg = db.Column(db.String(2000), nullable=False)
-    post_datetime = db.Column(db.String(30), nullable=False) #remember to change to datetime!
+    post_datetime = db.Column(db.Integer, nullable=False) #remember to change to datetime!
     is_posted = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     platform_id = db.Column(db.Integer, db.ForeignKey('platforms.platform_id'), nullable=False)

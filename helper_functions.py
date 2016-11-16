@@ -10,17 +10,11 @@ app = Flask(__name__)
 def check_for_posts():
     """Checks to see if there are posts that need to be sent"""
 
-    unpublished_statuses = Post.query.filter_by(is_posted=False).all()
-    current_time = time.time()
-    statues_to_post = []
+    current_time = int(time.time())
+    unpublished_statuses = Post.query.options(db.joinedload('platform')).filter_by(is_posted=False).filter(Post.post_datetime<=current_time).all()
 
+    return unpublished_statuses
 
-    for post in unpublished_statuses:
-        time_to_be_posted = int(post.post_datetime)
-
-        if time_to_be_posted <= current_time:
-            statues_to_post.append(post.post_id)
-    print statues_to_post
 
 
 
@@ -29,33 +23,24 @@ def post_it(the_posts):
 
 
 
-    for each_id in the_posts:
-        post = Post.query.filter_by(post_id=each_id).first()
+    for post in the_posts:
         msg = post.msg
         user_id = post.user_id
-        platform = Platform.query.filter_by(user_id=user_id).first()
-        access_token = platform.access_token
+        access_token = post.platform.access_token
         api = GraphAPI(access_token)
 
         api.put_object(parent_object='me', connection_name='feed', message=msg)
 
-        # post.update().values(is_posted=True)
+        post.is_posted=True
+        db.session.add(post)
 
-        # user_id = post.user_id
-        # platform = Platform.query.filter_by(user_id=user_id).first()
-        # access_token = platform.access_token
-        # api = GraphAPI(access_token)
+    db.session.commit()
 
-        # api.put_object(parent_object='me', connection_name='feed', message=msg)
+#post_it(check_for_posts())
 
-        # post.update().values(is_posted=True)
+# or x = check_for_posts()
+# post_it(x)
 
-
-
-
-
-# ** check to see if "pending" post time has already passed
-# ** if so, post the status update
 
 if __name__ == "__main__":
     connect_to_db(app)

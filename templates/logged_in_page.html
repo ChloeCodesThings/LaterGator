@@ -25,8 +25,8 @@
 
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
-      document.getElementById('status').innerHTML = 'Please authorize LatorGator to ' +
-        'post to Facebook for you.';
+      document.getElementById('status').innerHTML = 'Would you like to post to Facebook?' +
+        ' Please click the button below';
     } else {
       // The person is not logged into Facebook, so we're not sure if
       // they are logged into this app or not.
@@ -120,9 +120,10 @@
 
 
 
-
-<!-- # make a button -->
+<h2>Facebook Profile</h2>
 <a href ="/post_profile" id="post_profile_button">Let's post to my profile!</a>
 
+<h2>Twitter</h2>
+<p><b>(Coming soon!)</b> Authorize posts to your Twitter</p>
 
 {% endblock %}
