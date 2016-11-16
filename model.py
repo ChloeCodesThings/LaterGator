@@ -68,7 +68,7 @@ class Post(db.Model):
     def __repr__(self):
         """Show post info"""
         return "<Post=%s User ID=%d>"\
-                %(self.text, self.user_id)  
+                %(self.msg, self.user_id)  
 
 
 ##############################################################################

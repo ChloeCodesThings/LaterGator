@@ -332,6 +332,32 @@ def add_post_to_db():
 
     return render_template("/confirm_profile.html", time_to_show=time_to_show)
 
+@app.route('/send_posts_later')
+def check_for_posts():
+    """Checks to see if posts need to be sent, and sends them"""
+
+    unpublished_statuses = Posts.query.filter_by(is_posted=False).all()
+    current_time = time.time()
+
+    for post in unpublished_statuses:
+        time_to_be_posted = post.post_datetime
+
+        if time_to_be_posted < current_time:
+
+            msg = post.msg
+            user_id = post.user_id
+            platform = Platform.query.filter_by(user_id=user_id).first()
+            access_token = platform.access_token
+            api = GraphAPI(access_token)
+
+            api.put_object(parent_object='me', connection_name='feed', message=msg)
+
+            post.update().values(is_posted=True)
+
+
+
+    return 
+
 
 
 
