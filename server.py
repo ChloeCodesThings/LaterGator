@@ -6,6 +6,10 @@ from model import connect_to_db, db, User, Platform, Post
 
 import time
 
+import urlparse
+
+import oauth2 as oauth
+
 
 app = Flask(__name__)
 
@@ -103,10 +107,13 @@ def logout_user():
     return redirect("/")
 
 
+# @app.route('/add_twitter_token', methods=['POST'])
+# def add_twitter_token():
+# ******NEED TO ADD THIS ROUTE*********
 
 
-@app.route('/add_token', methods=['POST'])
-def add_token():
+@app.route('/add_fb_token', methods=['POST'])
+def add_facebook_token():
     """Add token to db"""
 
     access_token = request.form.get("access_token")
@@ -358,6 +365,28 @@ def check_for_posts():
 
     return 
 
+@app.route('/twitter_oauth')
+def twitter_oauth():
+    """3-legged OAuth for Twitter"""
+
+    consumer_key =  'CMAhx22eA4kSoi4g30QFy8qZo'
+    consumer_secret =   'x0V8HY8fgSCPoDVw3qZ45FRJ4vtxIKN2z9o1cliCs5kl1qlaQb'
+
+
+    request_token_url = 'https://api.twitter.com/oauth/request_token'
+    access_token_url = 'https://api.twitter.com/oauth/access_token'
+    authorize_url = 'https://api.twitter.com/oauth/authorize'
+
+    consumer = oauth.Consumer(consumer_key, consumer_secret)
+    client = oauth.Client(consumer)
+
+    resp, content = client.request(request_token_url, "GET")
+    if resp['status'] != '200':
+        raise Exception("Invalid response %s." % resp['status'])
+
+    request_token = dict(urlparse.parse_qsl(content))
+
+    return redirect("%s?oauth_token=%s" % (authorize_url, request_token['oauth_token']))
 
 
 
