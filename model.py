@@ -43,7 +43,21 @@ class Platform(db.Model):
     def __repr__(self):
         """Show platform info"""
         return "<Platform name=%s User ID=%d>"\
-                %(self.platform_id, self.user_id)    
+                %(self.platform_id, self.user_id)
+
+class TwitterInfo(db.Model):
+    """Twitter OAuth info"""
+
+    __tablename__ = "twitterinfo"
+
+    platform_id = db.Column(db.Integer,
+                        primary_key=True,
+                        autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    oauth_token = db.Column(db.String(200), nullable=False)
+    oauth_token_secret = db.Column(db.String(200), nullable=False)
+
+    user = db.relationship("User", backref="twitterinfo")
 
 
 class Post(db.Model):

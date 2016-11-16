@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, session
 
 from facebook import GraphAPI
 
-from model import connect_to_db, db, User, Platform, Post
+from model import connect_to_db, db, User, Platform, Post, TwitterInfo
 
 import time
 
@@ -107,10 +107,6 @@ def logout_user():
     return redirect("/")
 
 
-# @app.route('/add_twitter_token', methods=['POST'])
-# def add_twitter_token():
-# ******NEED TO ADD THIS ROUTE*********
-
 
 @app.route('/add_fb_token', methods=['POST'])
 def add_facebook_token():
@@ -134,11 +130,24 @@ def add_facebook_token():
 
     return "success"
 
+@app.route('/post_twitter')
+def show_post_form():
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/')
 
+    user_id = session["user_id"]
+    twitterprofile = TwitterInfo.query.filter_by(user_id=user_id).first()
+
+    oauth_token = twitterprofile.oauth_token
+    user = User.query.filter_by(user_id=user_id).first()
+    username = user.username
+        
+    return render_template("post_profile.html", username=username)
 
 
 @app.route('/post_pages')
-def show_post_form():
+def show_post_form_pages():
     if 'user_id' not in session:
         flash("You need to be logged in for that!")
         return redirect('/')
@@ -385,10 +394,49 @@ def twitter_oauth():
         raise Exception("Invalid response %s." % resp['status'])
 
     request_token = dict(urlparse.parse_qsl(content))
+    session['secret'] = request_token['oauth_token_secret']
+
 
     return redirect("%s?oauth_token=%s" % (authorize_url, request_token['oauth_token']))
 
 
+
+@app.route('/add_twitter_token')
+def add_twitter_token():
+    """Add token to db"""
+
+    # token = oauth.Token(request_token['oauth_token'],
+    #     request_token['oauth_token_secret'])
+    # token.set_verifier(oauth_verifier)
+    # client = oauth.Client(consumer, token)
+
+    # resp, content = client.request(access_token_url, "POST")
+    # access_token = dict(urlparse.parse_qsl(content))
+
+    # print "Access Token:"
+    # print "    - oauth_token        = %s" % access_token['oauth_token']
+    # print "    - oauth_token_secret = %s" % access_token['oauth_token_secret']
+
+    # print "You may now access protected resources using the access tokens above."
+
+    oauth_token_secret = session['secret']
+
+    oauth_token = request.args.get('oauth_token')
+
+    twitter_info = TwitterInfo.query.filter_by(oauth_token=oauth_token, user_id=session['user_id']).first()
+
+    if not twitter_info:
+        twitter_info = TwitterInfo(user_id=session["user_id"], oauth_token=oauth_token, oauth_token_secret=oauth_token_secret)
+
+
+    else:
+        twitter_info.oauth_token = oauth_token
+
+    db.session.add(twitter_info)
+    db.session.commit()
+
+
+    return redirect("/")
 
 if __name__ == "__main__":
     app.debug = True
