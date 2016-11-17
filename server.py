@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, session
 
 from facebook import GraphAPI
 
-from model import connect_to_db, db, User, Platform, Post, TwitterInfo
+from model import connect_to_db, db, User, Platform, Post, TwitterInfo, TwitterPost
 
 import time
 
@@ -143,7 +143,7 @@ def show_post_form():
     user = User.query.filter_by(user_id=user_id).first()
     username = user.username
         
-    return render_template("post_profile.html", username=username)
+    return render_template("post_twitter.html", username=username)
 
 
 @app.route('/post_pages')
@@ -316,7 +316,7 @@ def add_post_to_db():
     user_id = session["user_id"]
     msg = request.form.get("userpost")
     scheduled_publish_time = int(request.form.get('publish_timestamp'))
-    platform = Platform.query.filter_by(user_id=user_id).first()
+    platform = Platform.query.filter_by(user_id=user_id).one()
     platform_id = platform.platform_id
     time_to_show = request.form.get('time_to_show')
 
@@ -328,25 +328,33 @@ def add_post_to_db():
     db.session.add(new_post)
     db.session.commit()
 
+    return render_template("confirm_profile.html", time_to_show=time_to_show)
 
 
+@app.route('/confirm_twitter', methods=['POST'])
+def add_twitter_post_to_db():
+    """Add post info to db"""
 
-    # ***** THIS POSTS TO FACEBOOK ******
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/login')
 
-    # user_id = session["user_id"]
-    # platform = Platform.query.filter_by(user_id=user_id).first()
-  
-    # access_token = platform.access_token
+    user_id = session["user_id"]
+    msg = request.form.get("userpost")
+    scheduled_publish_time = int(request.form.get('publish_timestamp'))
+    twitterinfo = TwitterInfo.query.filter_by(user_id=user_id).one()
+    twitterinfo_id = twitterinfo.twitterinfo_id
+    time_to_show = request.form.get('time_to_show')
 
 
-    # api = GraphAPI(access_token)
+    new_twitter_post = TwitterPost(msg=msg, post_datetime=scheduled_publish_time, user_id=session["user_id"], twitterinfo_id=twitterinfo_id)
 
-    # api.put_object(parent_object='me', connection_name='feed', message=msg)
+        #Add new user to database
+    db.session.add(new_twitter_post)
+    db.session.commit()
 
-#insert into db
-#show pending
+    return render_template("confirm_twitter.html", time_to_show=time_to_show)
 
-    return render_template("/confirm_profile.html", time_to_show=time_to_show)
 
 @app.route('/send_posts_later')
 def check_for_posts():
@@ -404,20 +412,6 @@ def twitter_oauth():
 @app.route('/add_twitter_token')
 def add_twitter_token():
     """Add token to db"""
-
-    # token = oauth.Token(request_token['oauth_token'],
-    #     request_token['oauth_token_secret'])
-    # token.set_verifier(oauth_verifier)
-    # client = oauth.Client(consumer, token)
-
-    # resp, content = client.request(access_token_url, "POST")
-    # access_token = dict(urlparse.parse_qsl(content))
-
-    # print "Access Token:"
-    # print "    - oauth_token        = %s" % access_token['oauth_token']
-    # print "    - oauth_token_secret = %s" % access_token['oauth_token_secret']
-
-    # print "You may now access protected resources using the access tokens above."
 
     oauth_token_secret = session['secret']
 

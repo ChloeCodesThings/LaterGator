@@ -50,7 +50,7 @@ class TwitterInfo(db.Model):
 
     __tablename__ = "twitterinfo"
 
-    platform_id = db.Column(db.Integer,
+    twitterinfo_id = db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
@@ -61,7 +61,7 @@ class TwitterInfo(db.Model):
 
 
 class Post(db.Model):
-    """Posts that the user has made"""
+    """Facebook posts that the user has submitted"""
 
     __tablename__ = "posts"
 
@@ -84,6 +84,25 @@ class Post(db.Model):
         return "<Post=%s User ID=%d>"\
                 %(self.msg, self.user_id)  
 
+
+class TwitterPost(db.Model):
+    """Twitter posts that the user has submitted"""
+
+    __tablename__ = "twitterposts"
+
+    post_id = db.Column(db.Integer,
+                        primary_key=True,
+                        autoincrement=True)
+    msg = db.Column(db.String(2000), nullable=False)
+    post_datetime = db.Column(db.Integer, nullable=False) #remember to change to datetime!
+    is_posted = db.Column(db.Boolean, default=False, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    twitterinfo_id = db.Column(db.Integer, db.ForeignKey('twitterinfo.twitterinfo_id'), nullable=False)
+    #add post id as well! could update or delete it too...
+
+
+    user = db.relationship("User", backref="twitterposts")
+    twitterinfo = db.relationship("TwitterInfo", backref="twitterposts")
 
 ##############################################################################
 # Helper functions
