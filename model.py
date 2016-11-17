@@ -17,33 +17,26 @@ class User(db.Model):
     password = db.Column(db.String(15), nullable=False)
 
 
-    # not necessary, but can add in I guess
     def __repr__(self):
         """Show user info"""
         return "<User id=%d Username=%s Password=%s>"\
                 %(self.user_id, self.username, self.password)
 
 
-class Platform(db.Model):
-    """Social media platforms"""
+class FacebookInfo(db.Model):
+    """Facebook OAuth info"""
 
-    __tablename__ = "platforms"
+    __tablename__ = "facebookinfo"
 
-    platform_id = db.Column(db.Integer,
+    facebookinfo_id = db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
-    # name = db.Column(db.String(20), nullable=False) will add this when I add other platforms. Not needed for MVP
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     access_token = db.Column(db.String(200), nullable=False)
     facebook_user_id = db.Column(db.String(200), nullable=False)
-    # expires_in = db.Column(db.String(10), nullable=False)
 
-    user = db.relationship("User", backref="platforms")
+    user = db.relationship("User", backref="facebookinfo")
 
-    def __repr__(self):
-        """Show platform info"""
-        return "<Platform name=%s User ID=%d>"\
-                %(self.platform_id, self.user_id)
 
 class TwitterInfo(db.Model):
     """Twitter OAuth info"""
@@ -60,10 +53,10 @@ class TwitterInfo(db.Model):
     user = db.relationship("User", backref="twitterinfo")
 
 
-class Post(db.Model):
+class FacebookPost(db.Model):
     """Facebook posts that the user has submitted"""
 
-    __tablename__ = "posts"
+    __tablename__ = "facebookposts"
 
     post_id = db.Column(db.Integer,
                         primary_key=True,
@@ -72,16 +65,14 @@ class Post(db.Model):
     post_datetime = db.Column(db.Integer, nullable=False) #remember to change to datetime!
     is_posted = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    platform_id = db.Column(db.Integer, db.ForeignKey('platforms.platform_id'), nullable=False)
-    #add post id as well! could update or delete it too...
+    facebookinfo_id = db.Column(db.Integer, db.ForeignKey('facebookinfo.facebookinfo_id'), nullable=False)
 
-
-    user = db.relationship("User", backref="posts")
-    platform = db.relationship("Platform", backref="posts")
+    user = db.relationship("User", backref="facebookposts")
+    facebookinfo = db.relationship("FacebookInfo", backref="facebookposts")
 
     def __repr__(self):
         """Show post info"""
-        return "<Post=%s User ID=%d>"\
+        return "<Status=%s User ID=%d>"\
                 %(self.msg, self.user_id)  
 
 
@@ -98,11 +89,15 @@ class TwitterPost(db.Model):
     is_posted = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     twitterinfo_id = db.Column(db.Integer, db.ForeignKey('twitterinfo.twitterinfo_id'), nullable=False)
-    #add post id as well! could update or delete it too...
 
 
     user = db.relationship("User", backref="twitterposts")
     twitterinfo = db.relationship("TwitterInfo", backref="twitterposts")
+
+    def __repr__(self):
+        """Show tweet info"""
+        return "<Tweet=%s User ID=%d>"\
+            %(self.msg, self.user_id)
 
 ##############################################################################
 # Helper functions

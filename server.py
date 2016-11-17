@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, session
 
 from facebook import GraphAPI
 
-from model import connect_to_db, db, User, Platform, Post, TwitterInfo, TwitterPost
+from model import connect_to_db, db, User, FacebookInfo, FacebookPost, TwitterInfo, TwitterPost
 
 import time
 
@@ -41,7 +41,6 @@ def register_form():
 def register_process():
     """Processes registration."""
 
-    # Get form variables
     username = request.form.get("username")
     password = request.form.get("password")
 
@@ -53,14 +52,11 @@ def register_process():
 
     else:
 
-        #Create new user
         new_user = User(username=username, password=password)
 
-        #Add new user to database
         db.session.add(new_user)
         db.session.commit()
 
-        #Creates session with current user
         session["user_id"] = new_user.user_id
 
         flash("You now have an account %s!" % username)
@@ -75,11 +71,9 @@ def show_login():
 def login_process():
     """Process login."""
 
-    # Get form variables
     username = request.form.get("username")
     password = request.form.get("password")
 
-    #Checks if user is in database
     user = User.query.filter_by(username=username).first()
 
     if not user:
@@ -97,6 +91,7 @@ def login_process():
 
 @app.route('/logout')
 def logout_user():
+    """Logs out user"""
 
     if 'user_id' not in session:
         flash("You need to be logged in for that!")
@@ -115,272 +110,21 @@ def add_facebook_token():
     access_token = request.form.get("access_token")
     facebook_user_id = request.form.get("facebook_user_id")
 
-    platform_info = Platform.query.filter_by(facebook_user_id=facebook_user_id, user_id=session['user_id']).first()
+    facebook_info = FacebookInfo.query.filter_by(facebook_user_id=facebook_user_id, user_id=session['user_id']).first()
 
-    if not platform_info:
-        platform_info = Platform(user_id=session["user_id"], access_token=access_token, facebook_user_id=facebook_user_id)
+    if not facebook_info:
+        facebook_info = FacebookInfo(user_id=session["user_id"], access_token=access_token, facebook_user_id=facebook_user_id)
 
 
     else:
-        platform_info.access_token = access_token
+        facebook_info.access_token = access_token
 
-    db.session.add(platform_info)
+    db.session.add(facebook_info)
     db.session.commit()
 
 
     return "success"
 
-@app.route('/post_twitter')
-def show_post_form():
-    if 'user_id' not in session:
-        flash("You need to be logged in for that!")
-        return redirect('/')
-
-    user_id = session["user_id"]
-    twitterprofile = TwitterInfo.query.filter_by(user_id=user_id).first()
-
-    oauth_token = twitterprofile.oauth_token
-    user = User.query.filter_by(user_id=user_id).first()
-    username = user.username
-        
-    return render_template("post_twitter.html", username=username)
-
-
-@app.route('/post_pages')
-def show_post_form_pages():
-    if 'user_id' not in session:
-        flash("You need to be logged in for that!")
-        return redirect('/')
-
-    user_id = session["user_id"]
-    platform = Platform.query.filter_by(user_id=user_id).first()
-  
-    access_token = platform.access_token
-
-    api = GraphAPI(access_token)
-    
-    page_response = api.get_connections("me", "accounts")
-    
-    return render_template("post_pages.html", pages=page_response["data"])
-
-
-@app.route('/post_profile')
-def show_post_form_profile():
-    if 'user_id' not in session:
-        flash("You need to be logged in for that!")
-        return redirect('/')
-
-    user_id = session["user_id"]
-    platform = Platform.query.filter_by(user_id=user_id).first()
-  
-    access_token = platform.access_token
-    user = User.query.filter_by(user_id=user_id).first()
-    username = user.username
-        
-    return render_template("post_profile.html", username=username)
-
-
-
-
-
-@app.route('/confirm_pages', methods=['POST'])
-def confirm_post():
-
-    if 'user_id' not in session:
-        flash("You need to be logged in for that!")
-        return redirect('/login')
-
-    page_id = request.form.get("page_id")
-    msg = request.form.get("userpost")
-    scheduled_publish_time = request.form.get('publish_timestamp')
-    time_to_show = request.form.get('time_to_show')
-    user_input_time = '"time_to_show"'
-
-    user_id = session["user_id"]
-    platform = Platform.query.filter_by(user_id=user_id).first()
-  
-    access_token = platform.access_token
-
-
-    api = GraphAPI(access_token)
-
-
-    access_token_response = api.get_object(id=page_id, fields='access_token')
-
-    page_token = access_token_response['access_token']
-
-    page_api = GraphAPI(page_token)
-
-    page_api.put_object(parent_object='me', connection_name='feed', scheduled_publish_time=scheduled_publish_time, published=False,
-                 message=msg)
-
-    #insert response['post_id'] into post DB
-
-    #return redirect("/posts/{ID}")
-
-    page_response = api.get_connections("me", "accounts")
-
-    pages = page_response["data"]
-
-    all_posts_regardless_of_page = []
-    published_posts = []
-    unpublished_posts = []
-
-    for page in pages:
-        current_page_id = str(page['id']) #getting current page id
-
-        #getting page's posts
-        
-        post_rsp=api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message,id')
-
-        for post in post_rsp['data']:
-            # post_ids.append(post['id'])
-
-            if post['is_published']:
-                published_posts.append(post)
-            else:
-                unpublished_posts.append(post)
-
-
-    return render_template("/confirm_page.html", time_to_show=time_to_show, published_posts=published_posts, unpublished_posts=unpublished_posts)
-    # return render_template("/confirm.html", hour=hour, minute=minute, timezone=timezone, ampm=ampm, userpost=userpost, monthyear=monthyear)
-
-
-
-# @app.route('/myposts')
-# def show_posts():
-#     if 'user_id' not in session:
-#         flash("You need to be logged in for that!")
-#         return redirect('/login')
-
-#     user_id = session["user_id"]
-#     platform = Platform.query.filter_by(user_id=user_id).first()
-  
-#     access_token = platform.access_token
-#     api = GraphAPI(access_token)
-    
-#     page_response = api.get_connections("me", "accounts")
-
-#     pages = page_response["data"]
-
-#     all_posts_regardless_of_page = []
-#     published_posts = []
-#     unpublished_posts = []
-
-#     for page in pages:
-#         current_page_id = str(page['id']) #getting current page id
-
-#         #getting page's posts
-        
-#         post_rsp=api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message')
-
-#         for post in post_rsp['data']:
-#             # post_ids.append(post['id'])
-
-#             if post['is_published']:
-#                 published_posts.append(post)
-#             else:
-#                 unpublished_posts.append(post)
-
-
-
-
-#             # for each_post in all_posts_regardless_of_page:
-#             #     message = each_post['message']
-#             #     is_published = each_post['is_published']
-
-
-
-
-#         # post_ids = [ p['id'] for p in  post_rsp['data']] #getting post ids
-
-
-
-
-
-#     return render_template("myposts.html", published_posts=published_posts, unpublished_posts=unpublished_posts)
-
-
-# @app.route('/fbbutton')
-# def test():
-#     return render_template("fbbutton.html")
-
-@app.route('/confirm_profile', methods=['POST'])
-def add_post_to_db():
-    """Add post info to db"""
-
-    if 'user_id' not in session:
-        flash("You need to be logged in for that!")
-        return redirect('/login')
-
-    user_id = session["user_id"]
-    msg = request.form.get("userpost")
-    scheduled_publish_time = int(request.form.get('publish_timestamp'))
-    platform = Platform.query.filter_by(user_id=user_id).one()
-    platform_id = platform.platform_id
-    time_to_show = request.form.get('time_to_show')
-
-
-    new_post = Post(msg=msg, post_datetime=scheduled_publish_time, user_id=session["user_id"], platform_id=platform_id)
-    
-
-        #Add new user to database
-    db.session.add(new_post)
-    db.session.commit()
-
-    return render_template("confirm_profile.html", time_to_show=time_to_show)
-
-
-@app.route('/confirm_twitter', methods=['POST'])
-def add_twitter_post_to_db():
-    """Add post info to db"""
-
-    if 'user_id' not in session:
-        flash("You need to be logged in for that!")
-        return redirect('/login')
-
-    user_id = session["user_id"]
-    msg = request.form.get("userpost")
-    scheduled_publish_time = int(request.form.get('publish_timestamp'))
-    twitterinfo = TwitterInfo.query.filter_by(user_id=user_id).one()
-    twitterinfo_id = twitterinfo.twitterinfo_id
-    time_to_show = request.form.get('time_to_show')
-
-
-    new_twitter_post = TwitterPost(msg=msg, post_datetime=scheduled_publish_time, user_id=session["user_id"], twitterinfo_id=twitterinfo_id)
-
-        #Add new user to database
-    db.session.add(new_twitter_post)
-    db.session.commit()
-
-    return render_template("confirm_twitter.html", time_to_show=time_to_show)
-
-
-@app.route('/send_posts_later')
-def check_for_posts():
-    """Checks to see if posts need to be sent, and sends them"""
-
-    unpublished_statuses = Posts.query.filter_by(is_posted=False).all()
-    current_time = time.time()
-
-    for post in unpublished_statuses:
-        time_to_be_posted = post.post_datetime
-
-        if time_to_be_posted < current_time:
-
-            msg = post.msg
-            user_id = post.user_id
-            platform = Platform.query.filter_by(user_id=user_id).first()
-            access_token = platform.access_token
-            api = GraphAPI(access_token)
-
-            api.put_object(parent_object='me', connection_name='feed', message=msg)
-
-            post.update().values(is_posted=True)
-
-
-
-    return 
 
 @app.route('/twitter_oauth')
 def twitter_oauth():
@@ -411,7 +155,7 @@ def twitter_oauth():
 
 @app.route('/add_twitter_token')
 def add_twitter_token():
-    """Add token to db"""
+    """Add twitter tokens to db"""
 
     oauth_token_secret = session['secret']
 
@@ -431,6 +175,177 @@ def add_twitter_token():
 
 
     return redirect("/")
+
+@app.route('/post_twitter')
+def show_post_form():
+    """Show posting for for Twitter"""
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/')
+
+    user_id = session["user_id"]
+    twitterprofile = TwitterInfo.query.filter_by(user_id=user_id).first()
+
+    oauth_token = twitterprofile.oauth_token
+    user = User.query.filter_by(user_id=user_id).first()
+    username = user.username
+        
+    return render_template("post_twitter.html", username=username)
+
+
+@app.route('/post_pages')
+def show_post_form_pages():
+    """Show posting for for Facebook Pages"""
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/')
+
+    user_id = session["user_id"]
+    facebook_info = FacebookInfo.query.filter_by(user_id=user_id).first()
+  
+    access_token = facebook_info.access_token
+
+    api = GraphAPI(access_token)
+    
+    page_response = api.get_connections("me", "accounts")
+    
+    return render_template("post_pages.html", pages=page_response["data"])
+
+
+@app.route('/post_profile')
+def show_post_form_profile():
+    """Show posting for for Facebook profile"""
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/')
+
+    user_id = session["user_id"]
+    facebook_info = FacebookInfo.query.filter_by(user_id=user_id).first()
+  
+    access_token = facebook_info.access_token
+    user = User.query.filter_by(user_id=user_id).first()
+    username = user.username
+        
+    return render_template("post_profile.html", username=username)
+
+
+
+@app.route('/confirm_pages', methods=['POST'])
+def confirm_post():
+    """Sends scheduled post info to Facebook (pages only) and redirects to confirmation page"""
+
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/login')
+
+    page_id = request.form.get("page_id")
+    msg = request.form.get("userpost")
+    scheduled_publish_time = request.form.get('publish_timestamp')
+    time_to_show = request.form.get('time_to_show')
+    user_input_time = '"time_to_show"'
+
+    user_id = session["user_id"]
+    facebook_info = FacebookInfo.query.filter_by(user_id=user_id).first()
+  
+    access_token = facebook_info.access_token
+
+
+    api = GraphAPI(access_token)
+
+
+    access_token_response = api.get_object(id=page_id, fields='access_token')
+
+    page_token = access_token_response['access_token']
+
+    page_api = GraphAPI(page_token)
+
+    page_api.put_object(parent_object='me', connection_name='feed', scheduled_publish_time=scheduled_publish_time, published=False,
+                 message=msg)
+
+    #insert response['post_id'] into post DB
+
+    page_response = api.get_connections("me", "accounts")
+
+    pages = page_response["data"]
+
+    all_posts_regardless_of_page = []
+    published_posts = []
+    unpublished_posts = []
+
+    for page in pages:
+        current_page_id = str(page['id']) #getting current page id
+
+        
+        post_rsp=api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message,id')
+
+        for post in post_rsp['data']:
+
+            if post['is_published']:
+                published_posts.append(post)
+            else:
+                unpublished_posts.append(post)
+
+
+    return render_template("/confirm_page.html", time_to_show=time_to_show, published_posts=published_posts, unpublished_posts=unpublished_posts)
+
+
+@app.route('/confirm_profile', methods=['POST'])
+def add_post_to_db():
+    """Add post info to db"""
+
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/login')
+
+    user_id = session["user_id"]
+    msg = request.form.get("userpost")
+    scheduled_publish_time = int(request.form.get('publish_timestamp'))
+    facebook_info = FacebookInfo.query.filter_by(user_id=user_id).one()
+    facebookinfo_id = facebook_info.facebookinfo_id 
+    time_to_show = request.form.get('time_to_show')
+
+
+    new_post = FacebookPost(msg=msg, post_datetime=scheduled_publish_time, user_id=session["user_id"], facebookinfo_id=facebookinfo_id)
+    
+    db.session.add(new_post)
+    db.session.commit()
+
+    return render_template("confirm_profile.html", time_to_show=time_to_show)
+
+
+@app.route('/confirm_twitter', methods=['POST'])
+def add_twitter_post_to_db():
+    """Add post info to db"""
+
+    if 'user_id' not in session:
+        flash("You need to be logged in for that!")
+        return redirect('/login')
+
+    user_id = session["user_id"]
+    msg = request.form.get("userpost")
+    scheduled_publish_time = int(request.form.get('publish_timestamp'))
+    twitterinfo = TwitterInfo.query.filter_by(user_id=user_id).one()
+    twitterinfo_id = twitterinfo.twitterinfo_id
+    time_to_show = request.form.get('time_to_show')
+
+
+    new_twitter_post = TwitterPost(msg=msg, post_datetime=scheduled_publish_time, user_id=session["user_id"], twitterinfo_id=twitterinfo_id)
+
+    db.session.add(new_twitter_post)
+    db.session.commit()
+
+    return render_template("confirm_twitter.html", time_to_show=time_to_show)
+
+
+@app.route('/send_fb_posts_later')
+def check_for_posts():
+    """Route for cron job? - Checks to see if Facebook posts need to be sent, and sends them"""
+
+
+
+
+
+    return 
 
 if __name__ == "__main__":
     app.debug = True
