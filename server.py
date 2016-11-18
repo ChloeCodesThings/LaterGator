@@ -4,8 +4,6 @@ from facebook import GraphAPI
 
 from model import connect_to_db, db, User, FacebookInfo, FacebookPost, TwitterInfo, TwitterPost
 
-import time
-
 import urlparse
 
 import oauth2 as oauth
@@ -16,10 +14,7 @@ import os
 
 app = Flask(__name__)
 
-# Required to use Flask sessions and the debug toolbar
 app.secret_key = "CC89"
-
-# CONSUMER_KEY = os.environ('consumer_key')
 
 @app.route('/')
 def index():
@@ -121,14 +116,15 @@ def add_facebook_token():
 
 
     extended_token = graph.extend_access_token(app_id, app_secret)
-    print extended_token #verify that it expires in 60 days
-    print "************************************************"
+    final_token = extended_token['access_token']
+    print final_token
+    print "**********************"
 
 
     facebook_info = FacebookInfo.query.filter_by(facebook_user_id=facebook_user_id, user_id=session['user_id']).first()
 
     if not facebook_info:
-        facebook_info = FacebookInfo(user_id=session["user_id"], access_token=access_token, facebook_user_id=facebook_user_id)
+        facebook_info = FacebookInfo(user_id=session["user_id"], access_token=final_token, facebook_user_id=facebook_user_id)
 
 
     else:
