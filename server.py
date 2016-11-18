@@ -10,11 +10,16 @@ import urlparse
 
 import oauth2 as oauth
 
+import os
+
+
 
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
 app.secret_key = "CC89"
+
+# CONSUMER_KEY = os.environ('consumer_key')
 
 @app.route('/')
 def index():
@@ -110,6 +115,16 @@ def add_facebook_token():
     access_token = request.form.get("access_token")
     facebook_user_id = request.form.get("facebook_user_id")
 
+    graph = GraphAPI(access_token)
+    app_id=os.environ['FACEBOOK_APP_ID']
+    app_secret=os.environ['FACEBOOK_APP_SECRET']
+
+
+    extended_token = graph.extend_access_token(app_id, app_secret)
+    print extended_token #verify that it expires in 60 days
+    print "************************************************"
+
+
     facebook_info = FacebookInfo.query.filter_by(facebook_user_id=facebook_user_id, user_id=session['user_id']).first()
 
     if not facebook_info:
@@ -147,6 +162,7 @@ def twitter_oauth():
 
     request_token = dict(urlparse.parse_qsl(content))
     session['secret'] = request_token['oauth_token_secret']
+    session['token'] = request_token['oauth_token']
 
 
     return redirect("%s?oauth_token=%s" % (authorize_url, request_token['oauth_token']))
@@ -156,10 +172,29 @@ def twitter_oauth():
 @app.route('/add_twitter_token')
 def add_twitter_token():
     """Add twitter tokens to db"""
-
     oauth_token_secret = session['secret']
 
-    oauth_token = request.args.get('oauth_token')
+    token = oauth.Token(session['token'],
+    oauth_token_secret)
+
+    oauth_verifier = request.args.get('oauth_verifier')
+
+    token.set_verifier(oauth_verifier)
+
+    consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
+    consumer_secret=os.environ['TWITTER_CONSUMER_SECRET']
+
+    consumer = oauth.Consumer(consumer_key, consumer_secret)
+    client = oauth.Client(consumer, token)
+    access_token_url = 'https://api.twitter.com/oauth/access_token'
+
+    resp, content = client.request(access_token_url, "POST")
+    access_token = dict(urlparse.parse_qsl(content))
+
+    oauth_token=access_token['oauth_token']
+    oauth_token_secret=access_token['oauth_token_secret']
+
+
 
     twitter_info = TwitterInfo.query.filter_by(oauth_token=oauth_token, user_id=session['user_id']).first()
 
@@ -169,6 +204,7 @@ def add_twitter_token():
 
     else:
         twitter_info.oauth_token = oauth_token
+        twitter_info.oauth_token_secret = oauth_token_secret
 
     db.session.add(twitter_info)
     db.session.commit()
@@ -268,13 +304,11 @@ def confirm_post():
 
     pages = page_response["data"]
 
-    all_posts_regardless_of_page = []
     published_posts = []
     unpublished_posts = []
 
     for page in pages:
         current_page_id = str(page['id']) #getting current page id
-
         
         post_rsp=api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message,id')
 
