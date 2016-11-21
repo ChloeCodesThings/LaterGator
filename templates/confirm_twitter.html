@@ -6,9 +6,12 @@
     <img src="static/goodjob.jpg">
 
     <h3>Pending tweets:</h3>
-
-<!--     Need to show pending tweets here -->
-
+    <ul>
+    {% for tweet in unpublished_tweets %}
+        <br>
+            <li>{{tweet.msg}}</li>
+    {% endfor %}
+    </ul>
 
 
 {% endblock %}

@@ -19,10 +19,23 @@
     <form action='/confirm_twitter' method="POST">
 
         <p>Write your witty/thoughtful/deep/hilarious tweet here:</p>
-                <textarea rows="5" cols="100" name="userpost" required="true"></textarea>
-
+                <textarea id="userpost" rows="5" cols="100" name="userpost" maxlength="140" required="true"></textarea>
+                <p id="remaining_chars"></p>
 
             <script type="text/javascript">
+
+                $(document).ready(function(){
+
+                    $("#userpost").on('input', function() {
+                        console.log('test')
+                        if ($(this).val().length>=140) {
+                            alert('Oops! Remember- Twitter has a 140 character limit!');
+                        }
+                        $('#remaining_chars').html("Remaining characters : " + (140 - this.value.length))
+
+                    });
+                });
+
                 $(document).ready(function(){
 
                     $('#time_textbox').on('keyup',function() {

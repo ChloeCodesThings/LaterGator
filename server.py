@@ -340,7 +340,9 @@ def add_post_to_db():
     db.session.add(new_post)
     db.session.commit()
 
-    return render_template("confirm_profile.html", time_to_show=time_to_show)
+    unpublished_profile_posts = FacebookPost.query.filter_by(is_posted=False).all()
+
+    return render_template("confirm_profile.html", time_to_show=time_to_show, unpublished_profile_posts=unpublished_profile_posts)
 
 
 @app.route('/confirm_twitter', methods=['POST'])
@@ -364,7 +366,10 @@ def add_twitter_post_to_db():
     db.session.add(new_twitter_post)
     db.session.commit()
 
-    return render_template("confirm_twitter.html", time_to_show=time_to_show)
+    unpublished_tweets = TwitterPost.query.filter_by(is_posted=False).all()
+
+
+    return render_template("confirm_twitter.html", time_to_show=time_to_show, unpublished_tweets=unpublished_tweets)
 
 
 @app.route('/send_fb_posts_later')

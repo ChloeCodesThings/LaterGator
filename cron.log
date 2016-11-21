@@ -1,0 +1,22 @@
+2016-11-21 01:20:10,496 INFO sqlalchemy.engine.base.Engine select version()
+2016-11-21 01:20:10,498 INFO sqlalchemy.engine.base.Engine {}
+2016-11-21 01:20:10,500 INFO sqlalchemy.engine.base.Engine select current_schema()
+2016-11-21 01:20:10,501 INFO sqlalchemy.engine.base.Engine {}
+2016-11-21 01:20:10,502 INFO sqlalchemy.engine.base.Engine SELECT CAST('test plain returns' AS VARCHAR(60)) AS anon_1
+2016-11-21 01:20:10,502 INFO sqlalchemy.engine.base.Engine {}
+2016-11-21 01:20:10,503 INFO sqlalchemy.engine.base.Engine SELECT CAST('test unicode returns' AS VARCHAR(60)) AS anon_1
+2016-11-21 01:20:10,503 INFO sqlalchemy.engine.base.Engine {}
+2016-11-21 01:20:10,505 INFO sqlalchemy.engine.base.Engine show standard_conforming_strings
+2016-11-21 01:20:10,505 INFO sqlalchemy.engine.base.Engine {}
+2016-11-21 01:20:10,506 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2016-11-21 01:20:10,508 INFO sqlalchemy.engine.base.Engine SELECT facebookposts.post_id AS facebookposts_post_id, facebookposts.msg AS facebookposts_msg, facebookposts.post_datetime AS facebookposts_post_datetime, facebookposts.is_posted AS facebookposts_is_posted, facebookposts.user_id AS facebookposts_user_id, facebookposts.facebookinfo_id AS facebookposts_facebookinfo_id, facebookinfo_1.facebookinfo_id AS facebookinfo_1_facebookinfo_id, facebookinfo_1.user_id AS facebookinfo_1_user_id, facebookinfo_1.access_token AS facebookinfo_1_access_token, facebookinfo_1.facebook_user_id AS facebookinfo_1_facebook_user_id 
+FROM facebookposts LEFT OUTER JOIN facebookinfo AS facebookinfo_1 ON facebookinfo_1.facebookinfo_id = facebookposts.facebookinfo_id 
+WHERE facebookposts.is_posted = false AND facebookposts.post_datetime <= %(post_datetime_1)s
+2016-11-21 01:20:10,508 INFO sqlalchemy.engine.base.Engine {'post_datetime_1': 1479691209}
+2016-11-21 01:20:10,512 INFO sqlalchemy.engine.base.Engine COMMIT
+2016-11-21 01:20:10,515 INFO sqlalchemy.engine.base.Engine BEGIN (implicit)
+2016-11-21 01:20:10,517 INFO sqlalchemy.engine.base.Engine SELECT twitterposts.post_id AS twitterposts_post_id, twitterposts.msg AS twitterposts_msg, twitterposts.post_datetime AS twitterposts_post_datetime, twitterposts.is_posted AS twitterposts_is_posted, twitterposts.user_id AS twitterposts_user_id, twitterposts.twitterinfo_id AS twitterposts_twitterinfo_id, twitterinfo_1.twitterinfo_id AS twitterinfo_1_twitterinfo_id, twitterinfo_1.user_id AS twitterinfo_1_user_id, twitterinfo_1.oauth_token AS twitterinfo_1_oauth_token, twitterinfo_1.oauth_token_secret AS twitterinfo_1_oauth_token_secret 
+FROM twitterposts LEFT OUTER JOIN twitterinfo AS twitterinfo_1 ON twitterinfo_1.twitterinfo_id = twitterposts.twitterinfo_id 
+WHERE twitterposts.is_posted = false AND twitterposts.post_datetime <= %(post_datetime_1)s
+2016-11-21 01:20:10,517 INFO sqlalchemy.engine.base.Engine {'post_datetime_1': 1479691210}
+2016-11-21 01:20:10,520 INFO sqlalchemy.engine.base.Engine COMMIT

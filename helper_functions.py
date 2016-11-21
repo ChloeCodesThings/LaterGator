@@ -40,7 +40,7 @@ def post_statuses(unpublished_statuses):
 
 # To call these:
 
-#post_statuses(check_for_posts())
+# post_statuses(check_for_posts())
 
 # or x = check_for_posts()
 # post_statuses(x)
@@ -80,6 +80,8 @@ def post_tweets(unpublished_tweets):
 # To call these:
 
 # post_tweets(check_for_tweets())
+# post_statuses(check_for_posts())
+
 
 # or x = check_for_tweets()
 # post_tweets(x)
@@ -89,3 +91,5 @@ def post_tweets(unpublished_tweets):
 
 if __name__ == "__main__":
     connect_to_db(app)
+    post_statuses(check_for_posts())
+    post_tweets(check_for_tweets())
