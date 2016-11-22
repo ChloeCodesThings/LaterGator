@@ -10,7 +10,7 @@
 <b>Hover over this map for some pro-tips!</b>
 <br>
 
-<img src='/static/USAnotext.jpg' height="500" width="600" onmouseover="this.src='/static/USAchatty.jpg';" onmouseout="this.src='/static/USAnotext.jpg';" />
+<img src='/static/USAnotext.jpg' height="500" width="600" onmouseover="this.src='/static/USAwithzones2.jpg';" onmouseout="this.src='/static/USAnotext.jpg';" />
 
 
 <br>
@@ -44,6 +44,9 @@
 
                         var moment_unix = moment_time.format('X');
 
+                        var timezone = moment_time.format('zz')
+
+                        console.log(timezone)
                         console.log(moment_unix)
 
 
@@ -53,7 +56,6 @@
 
                     }
                     $('#time_textbox').on('input', changedTime);
-                    console.log("test")
                     var current_time = moment();
 
                     var hour_of_current_time = parseInt(current_time.format('H'));
@@ -68,7 +70,7 @@
                     } else {
                         $('#time_textbox').val("Tomorrow at 8am");
                     }
-                    
+
                     changedTime();
 
                 });
@@ -76,11 +78,10 @@
         
             </script>
                 <input id="hidden_time" type="hidden" name="publish_timestamp">
-<!--                 <input id="hidden_time_textbox" type="hidden" name="word_time_format">
- -->                
-    <p>What time would you like to post this?</p>
-    <p>Example: "Tomorrow at 5pm EST"</p>
-    <input id="time_textbox" name="time_to_show" rows="5" cols="100"><a id="suggested_time">Yo this is where the suggested time goes</a>
+<br>              
+<img src='/static/latergator.jpg' height="300" width="400" onmouseover="this.src='/static/latergatorsuggests.jpg';" onmouseout="this.src='/static/latergator.jpg';" />
+<br>
+    <input id="time_textbox" name="time_to_show" rows="5" cols="100">
     <p>Is this the time you'd like to post at?</p>
     <p id="time_example"></p>
 
