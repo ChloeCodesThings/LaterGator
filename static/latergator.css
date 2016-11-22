@@ -1,0 +1,26 @@
+h1 {
+    font-family: 'Baloo Bhaina', cursive;
+    font-size: 60px;
+}
+
+p {
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    background-color: #FF8C00;
+}
+
+.navbar-default {
+    background-color: #87e670;
+    border-color: #88b967;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: #fff;
+}
+
+.navbar-default .navbar-nav>.active>a, .navbar-default .navbar-nav>.active>a:focus, .navbar-default .navbar-nav>.active>a:hover {
+    color: #040404;
+    background-color: #ffa700;
+}

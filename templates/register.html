@@ -2,13 +2,14 @@
 {% block content %}
 
 
-<h2>Register</h2>
+<h1>Register</h1>
 
 <form action="/authorize_new_user" method="POST">
 
     <div>
         <label>
             Pick a fun username!:
+            <br>
             <input type="username" name="username">
         </label>
     </div>
@@ -16,11 +17,12 @@
     <div>
         <label>
             Choose a password:
+            <br>
             <input type="password" name="password">
         </label>
     </div>
     <div>
-        <input type="submit" value="Register">
+        <input class="btn btn-success" type="submit" value="Register">
     </div>
 
 </form>
