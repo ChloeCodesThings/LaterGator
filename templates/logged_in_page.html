@@ -1,8 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <h1>Welcome {{username}}!</h1>
-<h2 id="status"></h2>
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <h1>Welcome {{username}}!</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <img id ="welcome_image" src='/static/latergatorloggedin.jpg' class="img-rounded">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <h2 id="status"></h2>
+        </div>
+    </div>
 
 <script>
 
@@ -25,8 +43,7 @@
 
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
-      document.getElementById('status').innerHTML = 'Would you like to post to Facebook?' +
-        ' Please click the button below';
+      document.getElementById('status').innerHTML = 'Please login to Facebook';
     } else {
       // The person is not logged into Facebook, so we're not sure if
       // they are logged into this app or not.
@@ -91,9 +108,12 @@
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name);
       document.getElementById('status').innerHTML =
-        'You are logged in and are able to access the pages ' + response.name + ' manages!';
+        'You are logged in to Facebook!';
     });
   }
+
+
+  
 </script>
 
 
@@ -105,29 +125,35 @@
 -->
 
 
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+
+            <fb:login-button id="fb_login_button" scope="public_profile,email,manage_pages,publish_pages,publish_actions" onlogin="checkLoginState();">
+            </fb:login-button>
+        </div>
+    </div>
 
 
-<fb:login-button id="fb_login_button" scope="public_profile,email,manage_pages,publish_pages,publish_actions" onlogin="checkLoginState();">
-</fb:login-button>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <a href ="/post_pages" class="btn btn-success" id="post_pages_button">Let's post to my Facebook pages!</a>
 
-<!-- <div id="status">
-</div> -->
+            <a href ="/post_profile" class="btn btn-success" id="post_profile_button">Let's post to my Facebook profile!</a>
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <h2>Twitter</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <a href ="/twitter_oauth" class="btn btn-success" id="auth_twitter_button">Authorize Twitter</a>
 
-<a href ="/post_pages" id="post_pages_button">Let's post to my pages!</a>
-<!-- (This will be a button) -->
-
-
-
-
-<h2>Facebook Profile</h2>
-<a href ="/post_profile" id="post_profile_button">Let's post to my profile!</a>
-
-
-<h2>Twitter</h2>
-<a href ="/twitter_oauth" id="auth_twitter_button">Authorize Twitter</a>
-<br>
-<a href ="/post_twitter" id="post_twitter_button">Post to Twitter</a>
+            <a href ="/post_twitter" class="btn btn-success" id="post_twitter_button">Post to Twitter</a>
+        </div>
+    </div>
 
 
 {% endblock %}

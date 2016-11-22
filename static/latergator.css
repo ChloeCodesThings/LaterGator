@@ -24,3 +24,8 @@ body {
     color: #040404;
     background-color: #ffa700;
 }
+
+.h2, h2 {
+    font-size: 30px;
+    color: white;
+}
