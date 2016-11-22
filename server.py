@@ -59,7 +59,7 @@ def register_process():
 
         session["user_id"] = new_user.user_id
 
-        flash("You now have an account %s!" % username)
+        flash("You now have an account, %s!" % username)
         return redirect("/")
 
 

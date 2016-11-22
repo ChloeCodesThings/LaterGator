@@ -1,8 +1,11 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+
     <style>
-    #post_button {display: hidden;}
+/*    #post_button {display: hidden;}*/
     </style>
 <!--     <link rel="stylesheet" href-"./style.css"> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.js"></script>
@@ -12,13 +15,55 @@
 
 <body>
     
-  <p>*~Later Gator!~* This is the nav bar. <a href="/">home</a>. Also, <a href="/logout">logout</a></p>
-  <hr>
+ <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">
+        <img alt="LaterGator" src="/static/latergatortiny.jpg">
+        </a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="active"><a href="/">Home <span class="sr-only">(current)</span></a></li>
+        <li><a href="/post_twitter">Twitter</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Facebook <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/post_pages">Facebook Pages</a></li>
+            <li><a href="/post_profile">Facebook Profile</a></li>
+        </ul>
+          </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">LaterGator <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav> 
+
+
+
+
+ </div>
 {% for flash in get_flashed_messages() %}
-  {{ flash }}
+    <div class="alert alert-success" role="alert">{{ flash }}</div>
 {% endfor %}
-
-  {% block content %} put your content here {% endblock %}
-
+        {% block content %} put your content here {% endblock %}
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 </html>

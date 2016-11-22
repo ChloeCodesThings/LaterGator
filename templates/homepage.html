@@ -1,14 +1,57 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="container">
 
-    <h1>Welcome to LaterGator!</h1>
-        <img src="https://s-media-cache-ak0.pinimg.com/originals/d0/89/a9/d089a94a68c50a4fbfe5dc9b3fc7a5bd.jpg">
-        <p>LaterGator lets you post your status at a later time and will suggest the best times to post your status based on location.</p>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+                <h1>LaterGator</h1>
+                <p class="lead">A delayed status posting app.</p>
+        </div>
+    </div>
 
-<h2><a href="/login">Login</a></h2>
-<p>Login to your profile</p>
+<!-- <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <a class="btn btn-default" href="#" role="button">Login</a>
+            <a class="btn btn-default" href="#" role="button">Register</a>
+    </div>
+    </div> -->
 
-<h2><a href="/register">Register</a></h2>
-<p>Make a new account</p>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <img src='/static/latergatorhomepage.jpg'>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <a class="btn btn-default" href="/login" role="button">Login</a>
+            <a class="btn btn-default" href="/register" role="button">Register</a>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<!-- 
+        <div class="col-xs-6">
+            <div><h2><a href="/login">Login</a></h2></div>
+        </div>
+
+        <div class="col-xs-6">
+            <div><h2><a href="/register">Register</a></h2></div>
+        </div> -->
+
+<!-- <div class="row">
+    <div class="col-xs-2">
+        <h2><a href="/login">Login</a></h2>
+        <p>Login to your profile</p>
+    </div>
+    <div class="col-xs-2">
+    <h2><a href="/register">Register</a></h2>
+        <p>Make a new account</p>
+    </div>
+</div> -->
 
 {% endblock %}
