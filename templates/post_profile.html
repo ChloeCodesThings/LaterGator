@@ -7,11 +7,10 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-12 col-lg-offset-3">
             <h1>Set it, and forget it!</h1>
         </div>
     </div>
-        <br>
 
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
@@ -25,7 +24,7 @@
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
             <form action='/confirm_profile' method="POST">
                 <p>Write your witty/thoughtful/deep/hilarious profile post here:</p>
-                <textarea rows="5" cols="54" name="userpost" required="true"></textarea>
+                <textarea class="form-control" rows="5" cols="54" name="userpost" required="true"></textarea>
         </div>
     </div>
 
@@ -110,42 +109,41 @@
         </div>
     </div> -->
 
+
+    <div class="row">
+        <div class="col-xs-4 col-xs-offset-3 col-sm-4 col-sm-offset-3 col-md-4 col-med-offset-3 col-lg-4 col-lg-offset-3">
+            <h3>Current time:</h3>
+            <p id="time_right_now"></p>
+        </div>
+
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <h3>Next best time to post:</h3>
+                <p id="time_suggestion"></p>
+
+        </div>
+
+    </div>
+
+
 <br>
    <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">  
-            <img src='/static/latergator.jpg' height="300" width="400" onmouseover="this.src='/static/latergatorsuggestsfb.jpg';" onmouseout="this.src='/static/latergator.jpg';" />
+            <img src='/static/latergator.jpg' class="img-rounded" height="300" width="400" onmouseover="this.src='/static/latergatorsuggestsfb.jpg';" onmouseout="this.src='/static/latergator.jpg';" />
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-            <h2>The current time is:</h2>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-            <p id="time_right_now"></p>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-            <h2>The next best time to post is:</h2>
-        </div>
-    </div>
-
-    <div class="row">
+<!--     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
             <p id="time_suggestion"></p>
         </div>
     </div>
 
-
+ -->
 
 
 <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-            <h2>Your post will be sent:</h2>
+            <h2>Send my post at:</h2>
         </div>
 </div>
 
@@ -158,7 +156,7 @@
 
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-            <input id="time_textbox" name="time_to_show" rows="5" cols="100">
+            <input class="form-control" id="time_textbox" name="time_to_show" rows="5" cols="50">
         </div>
     </div>
     <p id="time_example"></p>

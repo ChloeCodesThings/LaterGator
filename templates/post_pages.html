@@ -4,30 +4,108 @@
 <script src="https://rawgithub.com/wanasit/chrono/master/chrono.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
 
-    <h1>Set it, and forget it!</h1>
-        <br>
-
-<b>Hover over this map for some pro-tips!</b>
-<br>
-
-<img src='/static/USAnotext.jpg' height="500" width="600" onmouseover="this.src='/static/USAwithzones2.jpg';" onmouseout="this.src='/static/USAnotext.jpg';" />
 
 
-<br>
+
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-12 col-lg-offset-3">
+            <h1>Set it, and forget it!</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <h2>Let's post to your pages, {{username}}!</h2>
+        </div>
+    </div>
+
+
     <form action="/confirm_pages" method="POST">
 
-        <select name="page_id">
-            {% for page in pages %}
-                <option value="{{ page['id'] }}">{{ page['name'] }}</option>
-            {% endfor %}
-        </select>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <select class="form-control" name="page_id">
+                {% for page in pages %}
+                    <option value="{{ page['id'] }}">{{ page['name'] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+        <br>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+        </div>
+    </div>
+        <br>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <form action='/confirm_profile' method="POST">
+                <p>Write your witty/thoughtful/deep/hilarious profile post here:</p>
+                    <textarea class="form-control" rows="5" cols="54" name="userpost" required="true"></textarea>
+        </div>
+    </div>
 
-        <p>Write your witty/thoughtful/deep/hilarious page post here:</p>
-                <textarea rows="5" cols="100" name="userpost" required="true"></textarea>
+    <div class="row">
+        <div class="col-xs-4 col-xs-offset-3 col-sm-4 col-sm-offset-3 col-md-4 col-med-offset-3 col-lg-4 col-lg-offset-3">
+            <h3>Current time:</h3>
+            <p id="time_right_now"></p>
+        </div>
+
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <h3>Next best time to post:</h3>
+                <p id="time_suggestion"></p>
+        </div>
+
+    </div>
+
+
+    <br>
+    <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">  
+                <img src='/static/latergator.jpg' class="img-rounded" height="300" width="400" onmouseover="this.src='/static/latergatorsuggestsfb.jpg';" onmouseout="this.src='/static/latergator.jpg';" />
+            </div>
+        </div>
+
+    <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+                <h2>Send my post at:</h2>
+            </div>
+    </div>
+
+    <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+                <p id="time_example"></p>
+            </div>
+</div>
+
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <input class="form-control" id="time_textbox" name="time_to_show" rows="5" cols="50">
+        </div>
+    </div>
+    <p id="time_example"></p>
+
+<div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <input class="btn btn-success" type="submit" value="Set it, and forget it!">
+        </div>
+</div>
+    </form>
+
+</div>
+
 
 
             <script type="text/javascript">
                 $(document).ready(function(){
+
+                    var current_time = moment().format("h:mm a");
+
+                    $('#time_right_now').html(current_time);
 
                     function changedTime() {
                          // time_from_textbox is whatever they typed in
@@ -44,7 +122,7 @@
 
                         var moment_unix = moment_time.format('X');
 
-                        var timezone = moment_time.format('zz')
+                        var timezone = moment_time.format('zz');
 
                         console.log(timezone)
                         console.log(moment_unix)
@@ -57,35 +135,34 @@
                     }
                     $('#time_textbox').on('input', changedTime);
                     var current_time = moment();
+                    console.log(current_time);
+
+
 
                     var hour_of_current_time = parseInt(current_time.format('H'));
                     console.log(hour_of_current_time);
 
+
                     if (hour_of_current_time < 8) {
+                        $('#time_suggestion').html("Today at 8am");
                         $('#time_textbox').val("Today at 8am");
                     } else if ( hour_of_current_time>= 8 && hour_of_current_time < 17) {
+                        $('#time_suggestion').html("Today at 5pm");
                         $('#time_textbox').val("Today at 5pm");
                     } else if( hour_of_current_time >= 17 && hour_of_current_time < 22) {
+                        $('#time_suggestion').html("Today at 10pm");
                         $('#time_textbox').val("Today at 10pm");
+
                     } else {
+                        $('#time_suggestion').html("Tomorrow at 8am");
                         $('#time_textbox').val("Tomorrow at 8am");
                     }
+
 
                     changedTime();
 
                 });
-
-        
             </script>
-                <input id="hidden_time" type="hidden" name="publish_timestamp">
-<br>              
-<img src='/static/latergator.jpg' height="300" width="400" onmouseover="this.src='/static/latergatorsuggestsfb.jpg';" onmouseout="this.src='/static/latergator.jpg';" />
-<br>
-    <input id="time_textbox" name="time_to_show" rows="5" cols="100">
-    <p>Is this the time you'd like to post at?</p>
-    <p id="time_example"></p>
 
-        <input type="submit" value="Set it, and forget it!">
-    </form>
 
 {% endblock %}

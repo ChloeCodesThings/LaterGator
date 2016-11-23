@@ -27,7 +27,11 @@ def index():
 
         user = User.query.filter_by(user_id=user_id).first()
         username = user.username
-        return render_template("logged_in_page.html", username=username)
+        twitter = TwitterInfo.query.filter_by(user_id=user_id).first()
+        logged_in = twitter
+
+
+        return render_template("logged_in_page.html", username=username, logged_in=logged_in)
 
     else:
         return render_template("homepage.html")
@@ -235,6 +239,10 @@ def show_post_form_pages():
         return redirect('/')
 
     user_id = session["user_id"]
+    user = User.query.filter_by(user_id=user_id).first()
+
+    username = user.username
+
     facebook_info = FacebookInfo.query.filter_by(user_id=user_id).first()
   
     access_token = facebook_info.access_token
@@ -243,7 +251,7 @@ def show_post_form_pages():
     
     page_response = api.get_connections("me", "accounts")
     
-    return render_template("post_pages.html", pages=page_response["data"])
+    return render_template("post_pages.html", username=username, pages=page_response["data"])
 
 
 @app.route('/post_profile')
