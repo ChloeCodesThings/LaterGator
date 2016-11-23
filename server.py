@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, session
 
+# from flask_debugtoolbar import DebugToolbarExtension
+
 from facebook import GraphAPI
 
 from model import connect_to_db, db, User, FacebookInfo, FacebookPost, TwitterInfo, TwitterPost
@@ -384,5 +386,6 @@ def check_for_posts():
 
 if __name__ == "__main__":
     app.debug = True
+    # DebugToolbarExtension(app)
     connect_to_db(app)
     app.run(host="0.0.0.0")
