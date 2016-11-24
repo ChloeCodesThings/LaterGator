@@ -4,26 +4,56 @@
 <script src="https://rawgithub.com/wanasit/chrono/master/chrono.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
 
-    <h1>Set it, and forget it!</h1>
-        <br>
+<div class="container">
 
-    <p>Let's post to your Twitter, {{username}}!</p>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-12 col-lg-offset-3">
+            <h1>Set it, and forget it!</h1>
+        </div>
+    </div>
 
-<b>Hover over this map for some pro-tips!</b>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <h2>Let's post to your Twitter, {{username}}!</h2>
+        </div>
+    </div>
+
 <br>
+   <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <form action='/confirm_profile' method="POST">
+                <p>Write your witty/thoughtful/deep/hilarious profile post here:</p>
+                <textarea id="userpost" class="form-control" rows="5" cols="54" name="userpost" required="true"></textarea>
+        </div>
+    </div>
 
-<img src='/static/USAnotext.jpg' height="500" width="600" onmouseover="this.src='/static/USAwithzones2.jpg';" onmouseout="this.src='/static/USAnotext.jpg';" />
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <p id="remaining_chars"></p>
+
+        </div>
+    </div>
 
 
-<br>
-    <form action='/confirm_twitter' method="POST">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <p id="remaining_chars"></p>
 
-        <p>Write your witty/thoughtful/deep/hilarious tweet here:</p>
-                <textarea id="userpost" rows="5" cols="100" name="userpost" maxlength="140" required="true"></textarea>
-                <p id="remaining_chars"></p>
+        </div>
+    </div>
 
-                        <script type="text/javascript">
+                <script type="text/javascript">
+
                 $(document).ready(function(){
+
+                    $("#userpost").on('input', function() {
+                        if ($(this).val().length>=140) {
+                            alert('Oops! Remember- Facebook has a 63,206 character limit!');
+                         }
+                         
+                    $('#remaining_chars').html("Remaining characters : " + (63206 - this.value.length))
+ 
+                     });
 
                     function changedTime() {
                          // time_from_textbox is whatever they typed in
