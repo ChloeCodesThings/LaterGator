@@ -21,107 +21,6 @@
         </div>
     </div>
 
-<script>
-
-  function statusChangeCallback(response) {
-
-    $('#post_pages_button').hide();
-    $('#post_profile_button').hide();
-    console.log('statusChangeCallback');
-
-
-
-    if (response.status === 'connected') {
-      // Logged into your app and Facebook.
-      var params = {'access_token': response['authResponse']['accessToken'],
-                    'facebook_user_id': response['authResponse']['userID']};
-
-      $.post('/add_fb_token', params, tokenSuccessHandler)
-
-      testAPI();
-
-    } else if (response.status === 'not_authorized') {
-      // The person is logged into Facebook, but not your app.
-      document.getElementById('status').innerHTML = 'Please login to Facebook';
-    } else {
-      // The person is not logged into Facebook, so we're not sure if
-      // they are logged into this app or not.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into Facebook.';
-    }
-  }
-
-  // This function is called when someone finishes with the Login
-  // Button.  See the onlogin handler attached to it in the sample
-  // code below.
-  function checkLoginState() {
-    FB.getLoginStatus(statusChangeCallback);
-  }
-
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '235439073543334',
-      cookie     : true,  // enable cookies to allow the server to access 
-                          // the session
-      xfbml      : true,  // parse social plugins on this page
-      version    : 'v2.5' // use graph api version 2.5
-    });
-
-    // Now that we've initialized the JavaScript SDK, we call 
-    // FB.getLoginStatus().  This function gets the state of the
-    // person visiting this page and can return one of three states to
-    // the callback you provide.  They can be:
-    //
-    // 1. Logged into your app ('connected')
-    // 2. Logged into Facebook, but not your app ('not_authorized')
-    // 3. Not logged into Facebook and can't tell if they are logged into
-    //    your app or not.
-    //
-    // These three cases are handled in the callback function.
-
-    FB.getLoginStatus(statusChangeCallback);
-
-
-  };
-
-  function tokenSuccessHandler(data) {
-    $('#fb_login_button').hide();
-    $('#post_pages_button').show();
-    $('#post_profile_button').show();
-
-  }
-
-  // Load the SDK asynchronously
-  (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
-
-  // Here we run a very simple test of the Graph API after login is
-  // successful.  See statusChangeCallback() for when this call is made.
-  function testAPI() {
-    console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', function(response) {
-      console.log('Successful login for: ' + response.name);
-      document.getElementById('status').innerHTML =
-        'You are logged in to Facebook!';
-    });
-  }
-
-</script>
-
-
-
-<!--
-  Below we include the Login Button social plugin. This button uses
-  the JavaScript SDK to present a graphical Login button that triggers
-  the FB.login() function when clicked.
--->
-
-
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
 
@@ -141,25 +40,27 @@
 
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-        {% if logged_in %}
-            <h2>You are logged into Twitter!</h2>
-        {% else %}
-            <h2>Please login to Twitter</h2>
-      {% endif %}
+          {% if logged_in %}
+              <h2>You are logged into Twitter!</h2>
+          {% else %}
+              <h2>Please login to Twitter</h2>
+          {% endif %}
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-      {% if logged_in %}
+          {% if logged_in %}
             <a href ="/post_twitter" class="btn btn-success" id="post_twitter_button">Post to Twitter</a>
-      {% else %}
+          {% else %}
 
-          <a href="/twitter_oauth">
-          <img src="/static/twitter_login.jpg">
-          </a>
-      {% endif %}
+          <a href="/twitter_oauth"><img src="/static/twitter_login.jpg"></a>
+          {% endif %}
         </div>
     </div>
+</div>
+
+<script src="/static/js/logged_in_page.js" />
+
 
 
 {% endblock %}

@@ -12,11 +12,10 @@ import oauth2 as oauth
 
 import os
 
-
-
 app = Flask(__name__)
 
 app.secret_key = "CC89"
+
 
 @app.route('/')
 def index():
@@ -30,11 +29,11 @@ def index():
         twitter = TwitterInfo.query.filter_by(user_id=user_id).first()
         logged_in = twitter
 
-
         return render_template("logged_in_page.html", username=username, logged_in=logged_in)
 
     else:
         return render_template("homepage.html")
+
 
 @app.route('/register')
 def register_form():
@@ -221,8 +220,13 @@ def show_post_form():
         flash("You need to be logged in for that!")
         return redirect('/')
 
+
     user_id = session["user_id"]
     twitterprofile = TwitterInfo.query.filter_by(user_id=user_id).first()
+
+    if not twitterprofile:
+        flash("You need to log into Twitter first!")
+        return redirect('/')
 
     oauth_token = twitterprofile.oauth_token
     user = User.query.filter_by(user_id=user_id).first()
@@ -244,6 +248,10 @@ def show_post_form_pages():
     username = user.username
 
     facebook_info = FacebookInfo.query.filter_by(user_id=user_id).first()
+
+    if not facebook_info:
+        flash("You need to log into Facebook first!")
+        return redirect('/')
   
     access_token = facebook_info.access_token
 
@@ -263,6 +271,10 @@ def show_post_form_profile():
 
     user_id = session["user_id"]
     facebook_info = FacebookInfo.query.filter_by(user_id=user_id).first()
+
+    if not facebook_info:
+        flash("You need to log into Facebook first!")
+        return redirect('/')
   
     access_token = facebook_info.access_token
     user = User.query.filter_by(user_id=user_id).first()
@@ -350,7 +362,7 @@ def add_post_to_db():
     db.session.add(new_post)
     db.session.commit()
 
-    unpublished_profile_posts = FacebookPost.query.filter_by(is_posted=False).all()
+    unpublished_profile_posts = FacebookPost.query.filter_by(is_posted=False, user_id=user_id).all()
 
     return render_template("confirm_profile.html", time_to_show=time_to_show, unpublished_profile_posts=unpublished_profile_posts)
 
@@ -376,7 +388,7 @@ def add_twitter_post_to_db():
     db.session.add(new_twitter_post)
     db.session.commit()
 
-    unpublished_tweets = TwitterPost.query.filter_by(is_posted=False).all()
+    unpublished_tweets = TwitterPost.query.filter_by(is_posted=False, user_id=user_id).all()
 
 
     return render_template("confirm_twitter.html", time_to_show=time_to_show, unpublished_tweets=unpublished_tweets)

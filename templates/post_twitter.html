@@ -21,7 +21,7 @@
 <br>
    <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-            <form action='/confirm_profile' method="POST">
+            <form action='/confirm_twitter' method="POST">
                 <p>Write your witty/thoughtful/deep/hilarious profile post here:</p>
                 <textarea id="userpost" class="form-control" rows="5" cols="54" name="userpost" required="true"></textarea>
         </div>
@@ -42,18 +42,29 @@
         </div>
     </div>
 
+
+
                 <script type="text/javascript">
 
                 $(document).ready(function(){
+
+
+
+
 
                     $("#userpost").on('input', function() {
                         if ($(this).val().length>=140) {
                             alert('Oops! Remember- Facebook has a 63,206 character limit!');
                          }
                          
-                    $('#remaining_chars').html("Remaining characters : " + (63206 - this.value.length))
+                    $('#remaining_chars').html("Remaining characters : " + (140 - this.value.length))
  
                      });
+
+
+                    var current_time = moment().format("h:mm a");
+
+                    $('#time_right_now').html(current_time);
 
                     function changedTime() {
                          // time_from_textbox is whatever they typed in
@@ -85,17 +96,25 @@
                     var current_time = moment();
 
                     var hour_of_current_time = parseInt(current_time.format('H'));
+                     var hour_of_current_time = parseInt(current_time.format('H'));
                     console.log(hour_of_current_time);
 
+
                     if (hour_of_current_time < 8) {
+                        $('#time_suggestion').html("Today at 8am");
                         $('#time_textbox').val("Today at 8am");
                     } else if ( hour_of_current_time>= 8 && hour_of_current_time < 17) {
+                        $('#time_suggestion').html("Today at 5pm");
                         $('#time_textbox').val("Today at 5pm");
                     } else if( hour_of_current_time >= 17 && hour_of_current_time < 22) {
+                        $('#time_suggestion').html("Today at 10pm");
                         $('#time_textbox').val("Today at 10pm");
+
                     } else {
+                        $('#time_suggestion').html("Tomorrow at 8am");
                         $('#time_textbox').val("Tomorrow at 8am");
                     }
+
 
                     changedTime();
 
@@ -104,16 +123,57 @@
         
             </script>
                 <input id="hidden_time" type="hidden" name="publish_timestamp">
-<!--                 <input id="hidden_time_textbox" type="hidden" name="word_time_format">
- -->                
-<br>              
-<img src='/static/latergator.jpg' height="300" width="400" onmouseover="this.src='/static/latergatorsuggests.jpg';" onmouseout="this.src='/static/latergator.jpg';" />
-<br>
-    <input id="time_textbox" name="time_to_show" rows="5" cols="100">
-    <p>Is this the time you'd like to post at?</p>
+
+
+ <div class="row">
+        <div class="col-xs-4 col-xs-offset-3 col-sm-4 col-sm-offset-3 col-md-4 col-med-offset-3 col-lg-4 col-lg-offset-3">
+            <h3>Current time:</h3>
+            <p id="time_right_now"></p>
+        </div>
+
+        <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+            <h3>Next best time to post:</h3>
+                <p id="time_suggestion"></p>
+
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">  
+            <img src='/static/latergator.jpg' class="img-rounded" height="300" width="400" onmouseover="this.src='/static/latergatorsuggeststweet.jpg';" onmouseout="this.src='/static/latergator.jpg';" />
+        </div>
+    </div>
+
+
+
+<div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <h2>Send my post at:</h2>
+        </div>
+</div>
+
+<div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <p id="time_example"></p>
+        </div>
+</div>
+
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <input class="form-control" id="time_textbox" name="time_to_show" rows="5" cols="50">
+        </div>
+    </div>
     <p id="time_example"></p>
 
-        <input type="submit" value="Set it, and forget it!">
+<div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <input class="btn btn-success" type="submit" value="Set it, and forget it!">
+        </div>
+</div>
     </form>
+</div>
 
 {% endblock %}
