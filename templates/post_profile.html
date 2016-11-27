@@ -1,9 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<script src="https://rawgithub.com/wanasit/chrono/master/chrono.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
-
 <div class="container">
 
     <div class="row">
@@ -18,8 +15,8 @@
         </div>
     </div>
 
+    <br>
 
-<br>
    <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
             <form action='/confirm_profile' method="POST">
@@ -31,101 +28,11 @@
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
             <p id="remaining_chars"></p>
-
         </div>
     </div>
 
+        <input id="hidden_time" type="hidden" name="publish_timestamp">
 
-            <script type="text/javascript">
-
-
-                $(document).ready(function(){
-
-                    $("#userpost").on('input', function() {
-                        if ($(this).val().length>=140) {
-                            alert('Oops! Remember- Facebook has a 63,206 character limit!');
-                         }
-                         
-                    $('#remaining_chars').html("Remaining characters : " + (63206 - this.value.length))
- 
-                     });
-
-                    var current_time = moment().format("h:mm a");
-
-                    $('#time_right_now').html(current_time);
-
-                    function changedTime() {
-                         // time_from_textbox is whatever they typed in
-                        var time_from_textbox = $('#time_textbox').val();
-                        console.log('time_from_textbox', time_from_textbox);
-
-                        // Parsed chrono date (chrono.parseDate(x))
-                        var chrono_time = chrono.parseDate(time_from_textbox);
-                        console.log('chrono_time', chrono_time);
-
-                        // format that to the value we want to actually send to facebook (seconds epoch value)
-                        var moment_time = moment(chrono_time);
-                        console.log('moment_time', moment_time);
-
-                        var moment_unix = moment_time.format('X');
-
-                        var timezone = moment_time.format('zz');
-
-                        console.log(timezone)
-                        console.log(moment_unix)
-
-
-                        // setting our final time value (seconds since the epoch) to our hidden input
-                        $('#hidden_time').val(moment_unix);
-                        $('#time_example').html(chrono_time);
-
-                    }
-                    $('#time_textbox').on('input', changedTime);
-                    var current_time = moment();
-                    console.log(current_time);
-
-
-
-                    var hour_of_current_time = parseInt(current_time.format('H'));
-                    console.log(hour_of_current_time);
-
-
-                    if (hour_of_current_time < 8) {
-                        $('#time_suggestion').html("Today at 8am");
-                        $('#time_textbox').val("Today at 8am");
-                    } else if ( hour_of_current_time>= 8 && hour_of_current_time < 17) {
-                        $('#time_suggestion').html("Today at 5pm");
-                        $('#time_textbox').val("Today at 5pm");
-                    } else if( hour_of_current_time >= 17 && hour_of_current_time < 22) {
-                        $('#time_suggestion').html("Today at 10pm");
-                        $('#time_textbox').val("Today at 10pm");
-
-                    } else {
-                        $('#time_suggestion').html("Tomorrow at 8am");
-                        $('#time_textbox').val("Tomorrow at 8am");
-                    }
-
-
-                    changedTime();
-
-                });
-
-        
-            </script>
-                <input id="hidden_time" type="hidden" name="publish_timestamp">
-<!--                 <input id="hidden_time_textbox" type="hidden" name="word_time_format">
- -->                
-
-   <!--  <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-            <b>Hover over this map for some pro-tips!</b>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-            <img src='/static/USAnotext.jpg' height="500" width="600" onmouseover="this.src='/static/USAwithzones2.jpg';" onmouseout="this.src='/static/USAnotext.jpg';" />
-        </div>
-    </div> -->
 
 
     <div class="row">
@@ -137,39 +44,28 @@
         <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
             <h3>Next best time to post:</h3>
                 <p id="time_suggestion"></p>
-
         </div>
-
     </div>
 
+    <br>
 
-<br>
-   <div class="row">
+    <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">  
-            <img src='/static/latergator.jpg' class="img-rounded" height="300" width="400" onmouseover="this.src='/static/latergatorsuggestsfb.jpg';" onmouseout="this.src='/static/latergator.jpg';" />
+            <img src='/static/images/latergator.jpg' class="img-rounded" height="300" width="400" onmouseover="this.src='/static/images/latergatorsuggestsfb.jpg';" onmouseout="this.src='/static/images/latergator.jpg';" />
         </div>
     </div>
 
-<!--     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
-            <p id="time_suggestion"></p>
-        </div>
-    </div>
-
- -->
-
-
-<div class="row">
+    <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
             <h2>Send my post at:</h2>
         </div>
-</div>
+    </div>
 
-<div class="row">
+    <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
             <p id="time_example"></p>
         </div>
-</div>
+    </div>
 
 
     <div class="row">
@@ -177,14 +73,25 @@
             <input class="form-control" id="time_textbox" name="time_to_show" rows="5" cols="50">
         </div>
     </div>
-    <p id="time_example"></p>
 
-<div class="row">
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+            <p id="time_example"></p>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
             <input class="btn btn-success" type="submit" value="Set it, and forget it!">
         </div>
+    </div>
+
+        </form>
 </div>
-    </form>
-</div>
+
+<script src="https://rawgithub.com/wanasit/chrono/master/chrono.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.2/moment.min.js"></script>
+<script src="/static/js/post_profile.js"></script>
+
 
 {% endblock %}

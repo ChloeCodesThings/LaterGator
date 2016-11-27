@@ -1,7 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect, session
 
-# from flask_debugtoolbar import DebugToolbarExtension
-
 from facebook import GraphAPI
 
 from model import connect_to_db, db, User, FacebookInfo, FacebookPost, TwitterInfo, TwitterPost
@@ -72,6 +70,7 @@ def register_process():
 def show_login():
     return render_template("login.html")
 
+
 @app.route('/authorize', methods=['POST'])
 def login_process():
     """Process login."""
@@ -94,6 +93,7 @@ def login_process():
         flash("You are now logged in")
         return redirect("/")
 
+
 @app.route('/logout')
 def logout_user():
     """Logs out user"""
@@ -107,7 +107,6 @@ def logout_user():
     return redirect("/")
 
 
-
 @app.route('/add_fb_token', methods=['POST'])
 def add_facebook_token():
     """Add token to db"""
@@ -116,28 +115,20 @@ def add_facebook_token():
     facebook_user_id = request.form.get("facebook_user_id")
 
     graph = GraphAPI(access_token)
-    app_id=os.environ['FACEBOOK_APP_ID']
-    app_secret=os.environ['FACEBOOK_APP_SECRET']
-
-
+    app_id = os.environ['FACEBOOK_APP_ID']
+    app_secret = os.environ['FACEBOOK_APP_SECRET']
     extended_token = graph.extend_access_token(app_id, app_secret)
     final_token = extended_token['access_token']
-    print final_token
-    print "**********************"
-
-
     facebook_info = FacebookInfo.query.filter_by(facebook_user_id=facebook_user_id, user_id=session['user_id']).first()
 
     if not facebook_info:
         facebook_info = FacebookInfo(user_id=session["user_id"], access_token=final_token, facebook_user_id=facebook_user_id)
-
 
     else:
         facebook_info.access_token = access_token
 
     db.session.add(facebook_info)
     db.session.commit()
-
 
     return "success"
 
@@ -146,8 +137,8 @@ def add_facebook_token():
 def twitter_oauth():
     """3-legged OAuth for Twitter"""
 
-    consumer_key =  'CMAhx22eA4kSoi4g30QFy8qZo'
-    consumer_secret =   'x0V8HY8fgSCPoDVw3qZ45FRJ4vtxIKN2z9o1cliCs5kl1qlaQb'
+    consumer_key = os.environ['TWITTER_CONSUMER_KEY']
+    consumer_secret = os.environ['TWITTER_CONSUMER_SECRET']
 
 
     request_token_url = 'https://api.twitter.com/oauth/request_token'
@@ -165,9 +156,7 @@ def twitter_oauth():
     session['secret'] = request_token['oauth_token_secret']
     session['token'] = request_token['oauth_token']
 
-
     return redirect("%s?oauth_token=%s" % (authorize_url, request_token['oauth_token']))
-
 
 
 @app.route('/add_twitter_token')
@@ -175,15 +164,13 @@ def add_twitter_token():
     """Add twitter tokens to db"""
     oauth_token_secret = session['secret']
 
-    token = oauth.Token(session['token'],
-    oauth_token_secret)
+    token = oauth.Token(session['token'], oauth_token_secret)
 
     oauth_verifier = request.args.get('oauth_verifier')
 
     token.set_verifier(oauth_verifier)
-
-    consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
-    consumer_secret=os.environ['TWITTER_CONSUMER_SECRET']
+    consumer_key = os.environ['TWITTER_CONSUMER_KEY'],
+    consumer_secret = os.environ['TWITTER_CONSUMER_SECRET']
 
     consumer = oauth.Consumer(consumer_key, consumer_secret)
     client = oauth.Client(consumer, token)
@@ -192,16 +179,12 @@ def add_twitter_token():
     resp, content = client.request(access_token_url, "POST")
     access_token = dict(urlparse.parse_qsl(content))
 
-    oauth_token=access_token['oauth_token']
-    oauth_token_secret=access_token['oauth_token_secret']
-
-
-
+    oauth_token = access_token['oauth_token']
+    oauth_token_secret = access_token['oauth_token_secret']
     twitter_info = TwitterInfo.query.filter_by(oauth_token=oauth_token, user_id=session['user_id']).first()
 
     if not twitter_info:
         twitter_info = TwitterInfo(user_id=session["user_id"], oauth_token=oauth_token, oauth_token_secret=oauth_token_secret)
-
 
     else:
         twitter_info.oauth_token = oauth_token
@@ -210,8 +193,8 @@ def add_twitter_token():
     db.session.add(twitter_info)
     db.session.commit()
 
-
     return redirect("/")
+
 
 @app.route('/post_twitter')
 def show_post_form():
@@ -220,7 +203,6 @@ def show_post_form():
         flash("You need to be logged in for that!")
         return redirect('/')
 
-
     user_id = session["user_id"]
     twitterprofile = TwitterInfo.query.filter_by(user_id=user_id).first()
 
@@ -228,10 +210,9 @@ def show_post_form():
         flash("You need to log into Twitter first!")
         return redirect('/')
 
-    oauth_token = twitterprofile.oauth_token
     user = User.query.filter_by(user_id=user_id).first()
     username = user.username
-        
+
     return render_template("post_twitter.html", username=username)
 
 
@@ -252,13 +233,13 @@ def show_post_form_pages():
     if not facebook_info:
         flash("You need to log into Facebook first!")
         return redirect('/')
-  
+
     access_token = facebook_info.access_token
 
     api = GraphAPI(access_token)
-    
+
     page_response = api.get_connections("me", "accounts")
-    
+
     return render_template("post_pages.html", username=username, pages=page_response["data"])
 
 
@@ -275,13 +256,10 @@ def show_post_form_profile():
     if not facebook_info:
         flash("You need to log into Facebook first!")
         return redirect('/')
-  
-    access_token = facebook_info.access_token
+
     user = User.query.filter_by(user_id=user_id).first()
     username = user.username
-        
     return render_template("post_profile.html", username=username)
-
 
 
 @app.route('/confirm_pages', methods=['POST'])
@@ -296,16 +274,12 @@ def confirm_post():
     msg = request.form.get("userpost")
     scheduled_publish_time = request.form.get('publish_timestamp')
     time_to_show = request.form.get('time_to_show')
-    user_input_time = '"time_to_show"'
 
     user_id = session["user_id"]
     facebook_info = FacebookInfo.query.filter_by(user_id=user_id).first()
-  
+
     access_token = facebook_info.access_token
-
-
     api = GraphAPI(access_token)
-
 
     access_token_response = api.get_object(id=page_id, fields='access_token')
 
@@ -316,8 +290,6 @@ def confirm_post():
     page_api.put_object(parent_object='me', connection_name='feed', scheduled_publish_time=scheduled_publish_time, published=False,
                  message=msg)
 
-    #insert response['post_id'] into post DB
-
     page_response = api.get_connections("me", "accounts")
 
     pages = page_response["data"]
@@ -326,8 +298,8 @@ def confirm_post():
     unpublished_posts = []
 
     for page in pages:
-        current_page_id = str(page['id']) #getting current page id
-        
+        current_page_id = str(page['id'])
+
         post_rsp=api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message,id')
 
         for post in post_rsp['data']:
@@ -336,7 +308,6 @@ def confirm_post():
                 published_posts.append(post)
             else:
                 unpublished_posts.append(post)
-
 
     return render_template("/confirm_page.html", time_to_show=time_to_show, published_posts=published_posts, unpublished_posts=unpublished_posts)
 
@@ -353,12 +324,11 @@ def add_post_to_db():
     msg = request.form.get("userpost")
     scheduled_publish_time = int(request.form.get('publish_timestamp'))
     facebook_info = FacebookInfo.query.filter_by(user_id=user_id).one()
-    facebookinfo_id = facebook_info.facebookinfo_id 
+    facebookinfo_id = facebook_info.facebookinfo_id
     time_to_show = request.form.get('time_to_show')
 
-
     new_post = FacebookPost(msg=msg, post_datetime=scheduled_publish_time, user_id=session["user_id"], facebookinfo_id=facebookinfo_id)
-    
+
     db.session.add(new_post)
     db.session.commit()
 
@@ -382,7 +352,6 @@ def add_twitter_post_to_db():
     twitterinfo_id = twitterinfo.twitterinfo_id
     time_to_show = request.form.get('time_to_show')
 
-
     new_twitter_post = TwitterPost(msg=msg, post_datetime=scheduled_publish_time, user_id=session["user_id"], twitterinfo_id=twitterinfo_id)
 
     db.session.add(new_twitter_post)
@@ -390,19 +359,7 @@ def add_twitter_post_to_db():
 
     unpublished_tweets = TwitterPost.query.filter_by(is_posted=False, user_id=user_id).all()
 
-
     return render_template("confirm_twitter.html", time_to_show=time_to_show, unpublished_tweets=unpublished_tweets)
-
-
-@app.route('/send_fb_posts_later')
-def check_for_posts():
-    """Route for cron job? - Checks to see if Facebook posts need to be sent, and sends them"""
-
-
-
-
-
-    return 
 
 if __name__ == "__main__":
     app.debug = True
