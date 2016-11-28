@@ -17,3 +17,6 @@ APIs: Facebook Graph API, Twitter<br/>
 
 Using a simple UI, users can create an account with LaterGator:
 ![](https://github.com/ChloeCodesThings/LaterGator/blob/master/screenshots/login_page_readme.png "Login Page Screenshot")
+
+Users can then use Twitter and Facebook OAuth to give LaterGator publish access on their behalf:
+![](https://github.com/ChloeCodesThings/LaterGator/blob/master/screenshots/fb_oauth_screenshot.png "FB OAuth Screenshot")
