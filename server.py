@@ -300,7 +300,7 @@ def confirm_post():
     for page in pages:
         current_page_id = str(page['id'])
 
-        post_rsp=api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message,id')
+        post_rsp = api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message,id')
 
         for post in post_rsp['data']:
 

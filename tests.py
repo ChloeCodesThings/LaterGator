@@ -40,6 +40,32 @@ class FlaskTestsLoggedOut(unittest.TestCase):
         result = self.client.get("/logout", follow_redirects=True)
         self.assertIn("You need to be logged in for that!", result.data)
 
+    def test_post_profile_error(self):
+        """Test if user tries to post to Facebook, but not logged in"""
+
+        result = self.client.get("/post_profile", follow_redirects=True)
+        self.assertIn("You need to be logged in for that!", result.data)
+
+    def test_post_twitter_error(self):
+        """Test if user tries to post to twitter, but not logged in"""
+
+        result = self.client.get("/post_twitter", follow_redirects=True)
+        self.assertIn("You need to be logged in for that!", result.data)
+
+    def test_post_profile_confirm_error(self):
+        """Test if user tries to access confirmation page, but not logged in"""
+
+        result = self.client.post("/confirm_profile", follow_redirects=True)
+        self.assertIn("You need to be logged in for that!", result.data)
+
+    def test_post_twitter_confirm_error(self):
+        """Test if user tries to access confirmation page, but not logged in"""
+
+        result = self.client.post("/confirm_twitter", follow_redirects=True)
+        self.assertIn("You need to be logged in for that!", result.data)
+
+
+
 
 
 class FlaskTestsLoggedIn(unittest.TestCase):
@@ -116,58 +142,56 @@ class FlaskTestsLoggedIn(unittest.TestCase):
         self.assertIn("You have been logged out- ttfn!", result.data)
 
     def test_post_twitter(self):
-        """Test"""
+        """Testing post_twitter page success"""
 
         result = self.client.get("/post_twitter", follow_redirects=True)
 
         self.assertIn("Let's post to your Twitter, test_user1!", result.data)
 
+    def test_post_twitter_error(self):
+        """Testing post_twitter page error"""
 
+        TwitterPost.query.delete()
+        TwitterInfo.query.delete()
+        db.session.commit()
 
+        result = self.client.get("/post_twitter", follow_redirects=True)
 
-    # def test_index_logged_in(self):
-    #     """Test logged in page"""
+        self.assertIn("You need to log into Twitter first!", result.data)
 
-    #     result = self.client.get("/")
-    #     self.assertIn("Welcome test_user1", result.data)
+    def test_post_profile(self):
+        """Testing post_profile page success"""
 
-    # def test_post_profile(self):
-    #     """Test post to profile page"""
-    #     result = self.client.get("/post_profile")
-    #     self.assertIn("Let's post to your profile, test_user1!", result.data)
+        result = self.client.get("/post_profile", follow_redirects=True)
 
-    # def test_confirm_profile(self):
-    #     """Test post to profile page"""
-    #     pass
+        self.assertIn("Let's post to your profile, test_user1!", result.data)
 
-    # def test_confirm_profile_too_far_in_future(self):
-    #     """Test post to profile page"""
-    #     pass
+    def test_post_profile_error(self):
+        """Testing post_profile page error"""
 
-    # def test_confirm_profile_empty_message(self):
-    #     """Test post to profile page"""
-    #     pass
+        FacebookPost.query.delete()
+        FacebookInfo.query.delete()
+        db.session.commit()
 
-    # def test_post_twitter(self):
-    #     """Test post to Twitter"""
-    #     result = self.client.get("/post_twitter")
-    #     self.assertIn("Let's post to your Twitter, test_user1!", result.data)
+        result = self.client.get("/post_profile", follow_redirects=True)
 
-    # def test_confirm_twitter(self):
-    #     """Test post to Twitter"""
-    #     pass
+        self.assertIn("You need to log into Facebook first!", result.data)
 
-    # def test_confirm_twitter_too_far_in_future(self):
-    #     """Test post to Twitter"""
-    #     pass
+    def test_confirm_profile(self):
+        """Testing confirm_profile"""
+        result = self.client.post("/confirm_profile",
+                                  data={"userpost": "Test for Facebook!", "publish_timestamp": "1480203960", "user_id": "test_user.user_id", "facebookinfo_id": "test_fb_info.facebookinfo_id"},
+                                  follow_redirects=True)
 
-    # def test_confirm_twitter_empty_message(self):
-    #     """Test post to Twitter"""
-    #     pass
+        self.assertIn("Test for Facebook!", result.data)
 
-    # def test_confirm_twitter_over_140(self):
-    #     """Test post to Twitter"""
-    #     pass
+    def test_confirm_twitter(self):
+        """Testing confirm_twitter"""
+        result = self.client.post("/confirm_twitter",
+                                  data={"userpost": "Test for Twitter!", "publish_timestamp": "1480203960", "user_id": "test_user.user_id", "twitterinfo_id": "test_twitter_info.twitterinfo_id"},
+                                  follow_redirects=True)
+
+        self.assertIn("Test for Twitter!", result.data)
 
     def tearDown(self):
         """Do at end of every test."""
