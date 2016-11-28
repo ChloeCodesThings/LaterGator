@@ -62,7 +62,7 @@ class FacebookPost(db.Model):
                         primary_key=True,
                         autoincrement=True)
     msg = db.Column(db.String(2000), nullable=False)
-    post_datetime = db.Column(db.Integer, nullable=False) #remember to change to datetime!
+    post_datetime = db.Column(db.Integer, nullable=False)
     is_posted = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     facebookinfo_id = db.Column(db.Integer, db.ForeignKey('facebookinfo.facebookinfo_id'), nullable=False)
@@ -111,14 +111,63 @@ def init_app():
     print "Connected to DB."
 
 
-def connect_to_db(app):
+def connect_to_db(app, db_uri="postgresql:///latergator"):
     """Connect to database."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///latergator'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)
+
+
+##############################################################################
+# Tests
+
+def example_data():
+    """Create some sample data."""
+
+    # In case this is run more than once, empty out existing data
+
+    FacebookPost.query.delete()
+    TwitterPost.query.delete()
+    FacebookInfo.query.delete()
+    TwitterInfo.query.delete()
+    User.query.delete()
+
+
+    # Test user
+    test_user = User(username='test_user1', password='testing123')
+
+    db.session.add(test_user)
+    db.session.commit()
+
+
+    # Test login info
+    test_fb_info = FacebookInfo(user_id=test_user.user_id, access_token='fake1234', facebook_user_id='1234567' )
+
+    db.session.add(test_fb_info)
+    db.session.commit()
+
+    #Test login info
+    test_twitter_info = TwitterInfo(user_id=test_user.user_id, oauth_token='fake1234', oauth_token_secret='1234567')
+
+    db.session.add(test_twitter_info)
+    db.session.commit()
+
+    #Test Facebook post
+    test_fb_post = FacebookPost(user_id=test_user.user_id, msg='Test for Facebook!', post_datetime='1480203960', facebookinfo_id=test_fb_info.facebookinfo_id)
+
+    db.session.add(test_fb_post)
+    db.session.commit()
+
+    # Test Twitter post
+    test_twitter_post = TwitterPost(user_id=test_user.user_id, msg='Test for Twitter!', post_datetime='1480203960', twitterinfo_id= test_twitter_info.twitterinfo_id)
+
+    db.session.add(test_twitter_post)
+
+    db.session.commit()
+
 
 
 if __name__ == "__main__":

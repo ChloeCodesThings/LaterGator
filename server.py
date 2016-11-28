@@ -20,7 +20,7 @@ def index():
     """Homepage for LaterGator"""
 
     if 'user_id' in session:
-        user_id = session["user_id"]
+        user_id = session['user_id']
 
         user = User.query.filter_by(user_id=user_id).first()
         username = user.username
