@@ -96,7 +96,7 @@ crontab -e
 * * * * * /path/to/LaterGator/scheduled_run.sh
 #fill in your own path above
 ```
-Output of the cron is stored in cron.log
+(Output of the cron is stored in cron.log)
 
 
 Run the app:
