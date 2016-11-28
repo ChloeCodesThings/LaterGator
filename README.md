@@ -83,13 +83,6 @@ createdb latergator
 
 ```
 python model.py
-db.create_all()
-```
-
-Run the app:
-
-```
-python server.py
 ```
 
 Edit your crontab to run every minute while running this app (make sure to remove this when done, or it will keep running!):
@@ -104,9 +97,16 @@ crontab -e
 ```
 
 Create a cron.log file so you can check to see your logged cron info:
-'''
+
+```
 touch cron.log
-'''
+```
+
+Run the app:
+
+```
+python server.py
+```
 
 You can now navigate to 'localhost:5000/' to access LaterGator.
 
