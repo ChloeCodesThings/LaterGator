@@ -16,4 +16,4 @@ APIs: Facebook Graph API, Twitter<br/>
 ## <a name="features"></a>Features
 
 Using a simple UI, users can create an account with LaterGator:
-![](https://github.com/ChloeCodesThings/LaterGator/chloe/blob/master/screenshots/login_page_readme.png "Login Page Screenshot")
+![](https://github.com/ChloeCodesThings/LaterGator/blob/master/screenshots/login_page_readme.png "Login Page Screenshot")
