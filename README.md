@@ -100,5 +100,10 @@ crontab -e
 You can now navigate to 'localhost:5000/' to access LaterGator.
 
 ## <a name="aboutme"></a>About Me
-Chloe Condon lives in the San Francisco Bay Area. This is her first software project which she made while attending Hackbright. Before Hackbright, Chloe spent her nights and weekends performing around the Bay Area as a singer/actress on stage in musicals and solo performances. To support her theatre career, she spent her days working the tech world- ranging from working as an executive assistant to CEOs, working at large online video game companies, and even being the first in-house hire at a virtual personal assistant company. Seeing all these companies from support roles peaked her interest and she wanted to learn how the products she was working on were getting made. So, she started to learn to code on her own through online resources like CodeAcademy and TreeHouse. Chloe is looking forward to bringing her artistic background into the tech world as an engineer!
+Chloe Condon lives in the San Francisco Bay Area. This is her first software project which she made while attending Hackbright.
+
+
+Before Hackbright, Chloe spent her nights and weekends performing around the Bay Area as a singer/actress on stage in musicals and solo performances. To support her theatre career, she spent her days working the tech world- ranging from working as an executive assistant to CEOs, working at large online video game companies, and even being the first in-house hire at a virtual personal assistant company. Seeing all these companies from support roles peaked her interest and she wanted to learn how the products she was working on were getting made. So, she started to learn to code on her own through online resources like CodeAcademy and TreeHouse. Chloe is looking forward to bringing her artistic background into the tech world as an engineer!
+
+
 Visit her on [LinkedIn](https://www.linkedin.com/in/chloecondon).
