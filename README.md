@@ -77,6 +77,11 @@ source secrets.sh
 Set up the database:
 
 ```
+createdb latergator
+```
+
+
+```
 python model.py
 db.create_all()
 ```
