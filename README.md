@@ -31,3 +31,70 @@ Next, they enter their status, and type in the time they would like it posted us
 
 LaterGator takes care of the rest! Your status will be posted at your specified time.:
 ![](https://github.com/ChloeCodesThings/LaterGator/blob/master/screenshots/fb_confirm_screenshot.png "FB Profile Post Confirmation Screenshot")
+
+## <a name="install"></a>Installation
+
+To run LaterGator:
+
+Install PostgreSQL (Mac OSX)
+
+Clone or fork this repo:
+
+```
+https://github.com/chloecodesthings/latergator.git
+```
+
+Create and activate a virtual environment inside your LaterGator directory:
+
+```
+virtualenv env
+source env/bin/activate
+```
+
+Install the dependencies:
+
+```
+pip install -r requirements.txt
+```
+
+Sign up to use the [FacebookGraph API](https://developers.facebook.com/apps/), and the [Twitter API](https://apps.twitter.com/).
+
+Save your API keys in a file called <kbd>secrets.sh</kbd> using this format:
+
+```
+export TWITTER_CONSUMER_KEY="YOURKEYHERE"
+export TWITTER_CONSUMER_SECRET="YOURKEYHERE"
+export FACEBOOK_APP_SECRET="YOURKEYHERE"
+export FACEBOOK_APP_ID="YOURKEYHERE"
+```
+
+Source your keys from your secrets.sh file into your virtual environment:
+
+```
+source secrets.sh
+```
+
+Set up the database:
+
+```
+python model.py
+db.create_all()
+```
+
+Run the app:
+
+```
+python server.py
+```
+
+Edit your crontab to run every minute while running this app:
+
+```
+crontab -e
+```
+```
+#Run functions for LaterGator app
+* * * * * /home/vagrant/src/my_hb_project/scheduled_run.sh
+```
+
+You can now navigate to 'localhost:5000/' to access LaterGator.
