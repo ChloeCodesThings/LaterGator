@@ -93,14 +93,11 @@ crontab -e
 
 ```
 #Run functions for LaterGator app
-* * * * * /home/vagrant/src/my_hb_project/scheduled_run.sh
+* * * * * /path/to/LaterGator/scheduled_run.sh
+#fill in your own path above
 ```
+Output of the cron is stored in cron.log
 
-Create a cron.log file so you can check to see your logged cron info:
-
-```
-touch cron.log
-```
 
 Run the app:
 
