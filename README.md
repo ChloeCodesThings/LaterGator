@@ -23,6 +23,9 @@ Using a simple UI, users can create an account with LaterGator:
 Users can then use Twitter and Facebook OAuth to give LaterGator publish access on their behalf:
 ![](https://github.com/ChloeCodesThings/LaterGator/blob/master/screenshots/fb_oauth_screenshot.png "FB OAuth Screenshot")
 
+![](https://github.com/ChloeCodesThings/LaterGator/blob/master/screenshots/twitter_oauth_screenshot.png "Twitter OAuth Screenshot")
+
+
 Next, they enter their status, and type in the time they would like it posted using phrases such as "Next Monday at 9am" or "In 1 hour" (the default time is the next best time to post based on LaterGator's research):
 ![](https://github.com/ChloeCodesThings/LaterGator/blob/master/screenshots/post_fb_profile_screenshot.png "FB Profile Post Screenshot")
 
