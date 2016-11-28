@@ -107,3 +107,6 @@ Before Hackbright, Chloe spent her nights and weekends performing around the Bay
 
 
 Visit her on [LinkedIn](https://www.linkedin.com/in/chloecondon).
+
+
+![](https://github.com/ChloeCodesThings/LaterGator/blob/master/screenshots/chloecondonpic.png "Chloe Condon")
