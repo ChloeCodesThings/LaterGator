@@ -97,10 +97,16 @@ Edit your crontab to run every minute while running this app (make sure to remov
 ```
 crontab -e
 ```
+
 ```
 #Run functions for LaterGator app
 * * * * * /home/vagrant/src/my_hb_project/scheduled_run.sh
 ```
+
+Create a cron.log file so you can check to see your logged cron info:
+'''
+touch cron.log
+'''
 
 You can now navigate to 'localhost:5000/' to access LaterGator.
 
