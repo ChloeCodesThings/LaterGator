@@ -27,7 +27,7 @@ Users can then use Twitter and Facebook OAuth to give LaterGator publish access 
 
 
 Next, they enter their status, and type in the time they would like it posted using phrases such as "Next Monday at 9am" or "In 1 hour" (the default time is the next best time to post based on LaterGator's research):
-![](https://github.com/ChloeCodesThings/LaterGator/blob/master/screenshots/post_fb_profile_screenshot.png "FB Profile Post Screenshot")
+![](https://github.com/ChloeCodesThings/LaterGator/blob/master/screenshots/post_profile_screenshot.png.png "FB Profile Post Screenshot")
 
 LaterGator takes care of the rest! Your status will be posted at your specified time.:
 ![](https://github.com/ChloeCodesThings/LaterGator/blob/master/screenshots/fb_confirm_screenshot.png "FB Profile Post Confirmation Screenshot")
