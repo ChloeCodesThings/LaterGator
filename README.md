@@ -87,7 +87,7 @@ Run the app:
 python server.py
 ```
 
-Edit your crontab to run every minute while running this app:
+Edit your crontab to run every minute while running this app (make sure to remove this when done, or it will keep running!):
 
 ```
 crontab -e
@@ -98,3 +98,7 @@ crontab -e
 ```
 
 You can now navigate to 'localhost:5000/' to access LaterGator.
+
+## <a name="aboutme"></a>About Me
+The developer lives in the San Francisco Bay Area. This is her first software project.
+Visit her on [LinkedIn](https://www.linkedin.com/in/chloecondon).
