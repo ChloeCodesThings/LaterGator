@@ -4,6 +4,8 @@ from facebook import GraphAPI
 
 from model import connect_to_db, db, User, FacebookInfo, FacebookPost, TwitterInfo, TwitterPost
 
+from passlib.hash import pbkdf2_sha256
+
 import urlparse
 
 import oauth2 as oauth
@@ -55,7 +57,9 @@ def register_process():
 
     else:
 
-        new_user = User(username=username, password=password)
+        hash = pbkdf2_sha256.encrypt(password)
+
+        new_user = User(username=username, password=hash)
 
         db.session.add(new_user)
         db.session.commit()
@@ -79,12 +83,17 @@ def login_process():
     password = request.form.get("password")
 
     user = User.query.filter_by(username=username).first()
+    hashed_pw = user.password
+    verified_pw = pbkdf2_sha256.verify(password, hashed_pw)
+
+    print verified_pw
+    print" ****************"
 
     if not user:
         flash("No such user")
         return redirect("/login")
 
-    elif user.password != password:
+    elif verified_pw == False:
         flash("Incorrect password")
         return redirect("/login")
 
