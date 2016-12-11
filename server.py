@@ -83,17 +83,16 @@ def login_process():
     password = request.form.get("password")
 
     user = User.query.filter_by(username=username).first()
-    hashed_pw = user.password
-    verified_pw = pbkdf2_sha256.verify(password, hashed_pw)
 
-    print verified_pw
-    print" ****************"
+    while user is not None:
+        hashed_pw = user.password
+        verified_pw = pbkdf2_sha256.verify(password, hashed_pw)
 
     if not user:
         flash("No such user")
         return redirect("/login")
 
-    elif verified_pw == False:
+    elif verified_pw != hashed_pw:
         flash("Incorrect password")
         return redirect("/login")
 
