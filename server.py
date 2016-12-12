@@ -84,22 +84,24 @@ def login_process():
 
     user = User.query.filter_by(username=username).first()
 
-    while user is not None:
-        hashed_pw = user.password
-        verified_pw = pbkdf2_sha256.verify(password, hashed_pw)
 
     if not user:
         flash("No such user")
         return redirect("/login")
 
-    elif verified_pw != hashed_pw:
-        flash("Incorrect password")
-        return redirect("/login")
-
     else:
-        session["user_id"] = user.user_id
-        flash("You are now logged in")
-        return redirect("/")
+
+        hashed_pw = user.password
+        verified_pw = pbkdf2_sha256.verify(password, hashed_pw)
+
+        if verified_pw != hashed_pw:
+            flash("Incorrect password")
+            return redirect("/login")
+
+        else:
+            session["user_id"] = user.user_id
+            flash("You are now logged in")
+            return redirect("/")
 
 
 @app.route('/logout')

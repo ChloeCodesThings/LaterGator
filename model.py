@@ -14,7 +14,7 @@ class User(db.Model):
                     primary_key=True,
                     autoincrement=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
-    password = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
 
 
     def __repr__(self):
@@ -137,7 +137,7 @@ def example_data():
 
 
     # Test user
-    test_user = User(username='test_user1', password='testing123')
+    test_user = User(username='test_user1', password='$pbkdf2-sha256$29000$OYeQEkKolZIS4hxD6D3H.A$Tsmp99zNmqECEiHJwjY8D9IsU49dvE2hXeLkVs31I3g')
 
     db.session.add(test_user)
     db.session.commit()
