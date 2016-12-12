@@ -57,7 +57,7 @@ def register_process():
 
     else:
 
-        hash = pbkdf2_sha256.encrypt(password)
+        hash = pbkdf2_sha256.hash(password)
 
         new_user = User(username=username, password=hash)
 
@@ -84,7 +84,6 @@ def login_process():
 
     user = User.query.filter_by(username=username).first()
 
-
     if not user:
         flash("No such user")
         return redirect("/login")
@@ -94,7 +93,7 @@ def login_process():
         hashed_pw = user.password
         verified_pw = pbkdf2_sha256.verify(password, hashed_pw)
 
-        if verified_pw != hashed_pw:
+        if verified_pw is False:
             flash("Incorrect password")
             return redirect("/login")
 

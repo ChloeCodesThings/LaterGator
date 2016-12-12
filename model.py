@@ -137,7 +137,7 @@ def example_data():
 
 
     # Test user
-    test_user = User(username='test_user1', password='$pbkdf2-sha256$29000$OYeQEkKolZIS4hxD6D3H.A$Tsmp99zNmqECEiHJwjY8D9IsU49dvE2hXeLkVs31I3g')
+    test_user = User(username='test_user1', password='$pbkdf2-sha256$29000$FALgPKfUWiuFkNK6NwZA6A$p.mRwWhJ8zs3cFNt7ygsb/HDF1EY5rYW3DdySpIm/NQ')
 
     db.session.add(test_user)
     db.session.commit()
