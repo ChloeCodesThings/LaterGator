@@ -5,7 +5,7 @@ $(document).ready(function(){
             alert('Oops! Remember- Facebook has a 63,206 character limit!');
          }
          
-    $('#remaining_chars').html("Remaining characters : " + (63206 - this.value.length))
+    $('#remaining_chars').html("Remaining characters : " + (63206 - this.value.length));
 
      });
 
@@ -31,8 +31,6 @@ $(document).ready(function(){
 
         var timezone = moment_time.format('zz');
 
-        console.log(timezone)
-        console.log(moment_unix)
 
 
         // setting our final time value (seconds since the epoch) to our hidden input
@@ -41,8 +39,6 @@ $(document).ready(function(){
 
     }
     $('#time_textbox').on('input', changedTime);
-    var current_time = moment();
-    console.log(current_time);
 
 
 
