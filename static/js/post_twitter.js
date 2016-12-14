@@ -47,6 +47,8 @@ $(document).ready(function(){
 
         if (value_check <= 600) {
             alert("You must post at least 10 minutes from now!");
+        } else if (value_check >= 5184000) {
+            alert("You cannot post more than 60 days ahead of time!");
         }
 
         console.log(timezone);
