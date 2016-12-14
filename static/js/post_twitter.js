@@ -35,6 +35,23 @@ $(document).ready(function(){
 
         var timezone = moment_time.format('zz');
 
+        var current_time_unix = current_time.format('X');
+
+        var value_check = moment_unix - current_time_unix;
+
+        console.log(value_check);
+
+        console.log(timezone);
+        console.log(moment_unix);
+        console.log(current_time_unix);
+
+        if (value_check <= 600) {
+            alert("You must post at least 10 minutes from now!");
+        }
+
+        console.log(timezone);
+        console.log(moment_unix);
+
         console.log(timezone);
         console.log(moment_unix);
 
