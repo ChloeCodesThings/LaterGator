@@ -6,7 +6,7 @@ $(document).ready(function(){
 
     $("#userpost").on('input', function() {
         if ($(this).val().length>=140) {
-            alert('Oops! Remember- Facebook has a 63,206 character limit!');
+            alert('Oops! Remember- Twitter has a 140 character limit!');
          }
          
     $('#remaining_chars').html("Remaining characters : " + (140 - this.value.length));

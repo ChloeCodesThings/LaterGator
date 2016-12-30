@@ -41,7 +41,7 @@ $(document).ready(function(){
         console.log(moment_unix);
         console.log(current_time_unix);
 
-        if (value_check <= 600) {
+        if (value_check < 600) {
             alert("You must post at least 10 minutes from now!");
         } else if (value_check >= 5184000) {
             alert("You cannot post more than 60 days ahead of time!");
