@@ -312,7 +312,7 @@ def confirm_post():
         post_rsp = api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message,id')
 
         for post in post_rsp['data']:
-
+            print post
             if post['is_published']:
                 published_posts.append(post)
             else:

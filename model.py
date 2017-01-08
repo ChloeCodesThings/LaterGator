@@ -61,7 +61,7 @@ class FacebookPost(db.Model):
     post_id = db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
-    msg = db.Column(db.String(2000), nullable=False)
+    msg = db.Column(db.String(63206), nullable=False)
     post_datetime = db.Column(db.Integer, nullable=False)
     is_posted = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
@@ -73,7 +73,30 @@ class FacebookPost(db.Model):
     def __repr__(self):
         """Show post info"""
         return "<Status=%s User ID=%d>"\
-                %(self.msg, self.user_id)  
+                %(self.msg, self.user_id)
+
+class FacebookPagePost(db.Model):
+    """Facebook PAGE posts that the user has submitted through LaterGator"""
+
+    __tablename__ = "facebookpageposts"
+
+    post_id = db.Column(db.Integer,
+                        primary_key=True,
+                        autoincrement=True)
+    msg = db.Column(db.String(63206), nullable=False)
+    is_posted = db.Column(db.Boolean, default=False, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    facebookinfo_id = db.Column(db.Integer, db.ForeignKey('facebookinfo.facebookinfo_id'), nullable=False)
+
+    user = db.relationship("User", backref="facebookpageposts")
+    facebookinfo = db.relationship("FacebookInfo", backref="facebookpageposts")
+
+    def __repr__(self):
+        """Show post info"""
+        return "<Status=%s Is Posted?=%s>"\
+                %(self.msg, self.is_posted)
+
+
 
 
 class TwitterPost(db.Model):
@@ -84,7 +107,7 @@ class TwitterPost(db.Model):
     post_id = db.Column(db.Integer,
                         primary_key=True,
                         autoincrement=True)
-    msg = db.Column(db.String(2000), nullable=False)
+    msg = db.Column(db.String(140), nullable=False)
     post_datetime = db.Column(db.Integer, nullable=False) #remember to change to datetime!
     is_posted = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
