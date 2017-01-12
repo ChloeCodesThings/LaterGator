@@ -384,6 +384,6 @@ def add_twitter_post_to_db():
 
 if __name__ == "__main__":
     app.debug = True
-    # DebugToolbarExtension(app)
     connect_to_db(app)
-    app.run(host="0.0.0.0")
+    PORT = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=PORT)
