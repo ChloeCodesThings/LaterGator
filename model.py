@@ -84,6 +84,7 @@ class FacebookPagePost(db.Model):
                         primary_key=True,
                         autoincrement=True)
     msg = db.Column(db.String(63206), nullable=False)
+    post_datetime = db.Column(db.Integer, nullable=False)
     is_posted = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     facebookinfo_id = db.Column(db.Integer, db.ForeignKey('facebookinfo.facebookinfo_id'), nullable=False)

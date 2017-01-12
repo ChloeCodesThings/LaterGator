@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, flash, redirect, session
 
 from facebook import GraphAPI
 
-from model import connect_to_db, db, User, FacebookInfo, FacebookPost, TwitterInfo, TwitterPost
+from model import connect_to_db, db, User, FacebookInfo, FacebookPost, TwitterInfo, TwitterPost, FacebookPagePost
 
 from passlib.hash import pbkdf2_sha256
 
@@ -280,8 +280,11 @@ def confirm_post():
         return redirect('/login')
 
     page_id = request.form.get("page_id")
+    user_id = session["user_id"]
     msg = request.form.get("userpost")
-    scheduled_publish_time = request.form.get('publish_timestamp')
+    scheduled_publish_time = int(request.form.get('publish_timestamp'))
+    facebook_info = FacebookInfo.query.filter_by(user_id=user_id).one()
+    facebookinfo_id = facebook_info.facebookinfo_id
     time_to_show = request.form.get('time_to_show')
 
     user_id = session["user_id"]
@@ -299,26 +302,35 @@ def confirm_post():
     page_api.put_object(parent_object='me', connection_name='feed', scheduled_publish_time=scheduled_publish_time, published=False,
                  message=msg)
 
-    page_response = api.get_connections("me", "accounts")
+    new_post = FacebookPagePost(msg=msg, post_datetime=scheduled_publish_time, user_id=session["user_id"], facebookinfo_id=facebookinfo_id)
 
-    pages = page_response["data"]
+    db.session.add(new_post)
+    db.session.commit()
 
-    published_posts = []
-    unpublished_posts = []
+    #Add unpublished part here??
 
-    for page in pages:
-        current_page_id = str(page['id'])
+    # page_response = api.get_connections("me", "accounts")
 
-        post_rsp = api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message,id')
+    # pages = page_response["data"]
 
-        for post in post_rsp['data']:
-            print post
-            if post['is_published']:
-                published_posts.append(post)
-            else:
-                unpublished_posts.append(post)
+    # published_posts = []
+    # unpublished_posts = []
 
-    return render_template("/confirm_page.html", time_to_show=time_to_show, published_posts=published_posts, unpublished_posts=unpublished_posts)
+    # for page in pages:
+    #     current_page_id = str(page['id'])
+
+    #     post_rsp = api.get_connections(id=current_page_id, connection_name='promotable_posts', fields='is_published,message,id')
+
+    #     for post in post_rsp['data']:
+    #         print post
+    #         if post['is_published']:
+    #             published_posts.append(post)
+    #         else:
+    #             unpublished_posts.append(post)
+
+    unpublished_page_posts = FacebookPagePost.query.filter_by(is_posted=False, user_id=user_id).all()
+
+    return render_template("/confirm_page.html", time_to_show=time_to_show, unpublished_page_posts=unpublished_page_posts)
 
 
 @app.route('/confirm_profile', methods=['POST'])
