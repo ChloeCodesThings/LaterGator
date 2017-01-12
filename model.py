@@ -135,10 +135,10 @@ def init_app():
     print "Connected to DB."
 
 
-def connect_to_db(app, db_uri="postgresql:///latergator"):
+def connect_to_db(app, db_uri=None):
     """Connect to database."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri or 'postgresql:///latergator'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True
     db.app = app

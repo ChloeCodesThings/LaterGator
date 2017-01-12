@@ -14,7 +14,8 @@ import os
 
 app = Flask(__name__)
 
-app.secret_key = "CC89"
+SECRET_KEY = os.environ.get("FLASK_SECRET_KEY", "BB8")
+
 
 
 @app.route('/')
@@ -382,8 +383,13 @@ def add_twitter_post_to_db():
 
     return render_template("confirm_twitter.html", time_to_show=time_to_show, unpublished_tweets=unpublished_tweets)
 
+
+@app.route("/error")
+def error():
+    raise Exception("Error!")
+
 if __name__ == "__main__":
-    app.debug = True
-    connect_to_db(app)
+    DEBUG = "NO_DEBUG" not in os.environ
+    connect_to_db(app, os.environ.get("DATABASE_URL"))
     PORT = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=PORT)
+    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
