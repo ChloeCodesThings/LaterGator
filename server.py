@@ -14,7 +14,7 @@ import os
 
 app = Flask(__name__)
 
-SECRET_KEY = os.environ.get("FLASK_SECRET_KEY", "BB8")
+SECRET_KEY = os.environ.get("FLASK_SECRET_KEY", "ABCDEFG")
 TWITTER_CONSUMER_KEY = os.environ.get("TWITTER_CONSUMER_KEY", "TWITTER_CONSUMER_KEY")
 TWITTER_CONSUMER_SECRET = os.environ.get("TWITTER_CONSUMER_SECRET", "TWITTER_CONSUMER_SECRET")
 FACEBOOK_APP_SECRET = os.environ.get("FACEBOOK_APP_SECRET", "FACEBOOK_APP_SECRET")
@@ -392,6 +392,7 @@ def error():
 
 if __name__ == "__main__":
     DEBUG = "NO_DEBUG" not in os.environ
+    app.secret_key = 'SECRET_KEY'
     connect_to_db(app, os.environ.get("DATABASE_URL"))
     PORT = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
