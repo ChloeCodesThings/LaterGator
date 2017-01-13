@@ -87,7 +87,7 @@ def post_tweets(unpublished_tweets):
 # post_tweets(x)
 
 def scheduled_run():
-    connect_to_db(app)
+    connect_to_db(app, os.environ.get("DATABASE_URL"))
     post_statuses(check_for_posts())
     post_tweets(check_for_tweets())
 
@@ -96,4 +96,4 @@ def scheduled_run():
 
 if __name__ == "__main__":
     scheduled_run()
-    
+    connect_to_db(app, os.environ.get("DATABASE_URL"))
