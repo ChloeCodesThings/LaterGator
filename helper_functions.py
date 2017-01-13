@@ -86,10 +86,14 @@ def post_tweets(unpublished_tweets):
 # or x = check_for_tweets()
 # post_tweets(x)
 
+def scheduled_run():
+    connect_to_db(app)
+    post_statuses(check_for_posts())
+    post_tweets(check_for_tweets())
+
 
 
 
 if __name__ == "__main__":
-    connect_to_db(app)
-    post_statuses(check_for_posts())
-    post_tweets(check_for_tweets())
+    scheduled_run()
+    
