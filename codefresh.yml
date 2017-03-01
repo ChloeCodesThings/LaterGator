@@ -4,7 +4,7 @@ steps:
     build-step:
         type: build
         dockerfile: Dockerfile
-        image-name: chloecodesthings/LaterGator
+        image-name: chloecodesthings/latergator-demo
         tag: latergator
 
     push to registry:
@@ -12,12 +12,11 @@ steps:
      candidate: ${{build-step}}
      tag: ${{CF_BRANCH}}
 
-    unit-tests:
-      image: ${{build-step}}
-      fail-fast: false
-      commands:
-        - python tests.py
-        - echo $(date)
+    # unit-tests:
+    #   image: ${{build-step}}
+    #   fail-fast: false
+    #   commands:
+    #     - python tests.py
 
     composition-step:
       type: composition
