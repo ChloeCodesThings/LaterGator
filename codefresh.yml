@@ -16,5 +16,5 @@ steps:
       image: ${{build-step}}
       fail-fast: false
       commands:
-        - python server.py
+        - python tests.py
         - echo $(date)
