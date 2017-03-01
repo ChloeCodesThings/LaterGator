@@ -18,3 +18,11 @@ steps:
       commands:
         - python tests.py
         - echo $(date)
+
+    composition-step:
+      type: composition
+      composition: latergator-example
+      composition-candidates:
+        main:
+          image: nhoag/curl
+          command: bash -c "sleep 20 && curl http://app:3000/" | echo 'works'
