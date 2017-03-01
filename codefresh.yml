@@ -1,0 +1,8 @@
+version: '1.0'
+steps:
+
+    build-step:
+        type: build
+        dockerfile: Dockerfile
+        image-name: chloecodesthings/LaterGator
+        tag: latergator
