@@ -132,7 +132,7 @@ def init_app():
     app = Flask(__name__)
 
     connect_to_db(app)
-    print "Connected to DB."
+    # print "Connected to DB."
 
 
 def connect_to_db(app, db_uri=None):
