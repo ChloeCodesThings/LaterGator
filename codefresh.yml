@@ -6,3 +6,15 @@ steps:
         dockerfile: Dockerfile
         image-name: chloecodesthings/LaterGator
         tag: latergator
+
+    push to registry:
+     type: push
+     candidate: ${{build-step}}
+     tag: ${{CF_BRANCH}}
+
+    unit-tests:
+      image: ${{build-step}}
+      fail-fast: false
+      commands:
+        - python server.py
+        - echo $(date)

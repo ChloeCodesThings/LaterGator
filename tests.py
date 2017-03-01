@@ -16,6 +16,9 @@ class FlaskTestsLoggedOut(unittest.TestCase):
 
         # Show Flask errors that happen during tests
         app.config['TESTING'] = True
+        app.config['SECRET_KEY'] = "ABCDEFG"
+        self.app = app.test_client()
+
 
     def test_index_logged_out(self):
         """Test homepage page."""
@@ -78,6 +81,8 @@ class FlaskTestsLoggedIn(unittest.TestCase):
         # Get the Flask test client
         self.client = app.test_client()
         app.config['TESTING'] = True
+
+        app.config['SECRET_KEY'] = "ABCDEFG"
 
         # Connect to test database
         connect_to_db(app, "postgresql:///testdb")
