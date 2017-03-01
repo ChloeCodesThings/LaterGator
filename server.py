@@ -6,7 +6,7 @@ from model import connect_to_db, db, User, FacebookInfo, FacebookPost, TwitterIn
 
 from passlib.hash import pbkdf2_sha256
 
-import urlparse
+import urlparse2
 
 import oauth2 as oauth
 
