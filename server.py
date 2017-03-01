@@ -20,6 +20,7 @@ TWITTER_CONSUMER_SECRET = os.environ.get("TWITTER_CONSUMER_SECRET", "TWITTER_CON
 FACEBOOK_APP_SECRET = os.environ.get("FACEBOOK_APP_SECRET", "FACEBOOK_APP_SECRET")
 FACEBOOK_APP_ID = os.environ.get("FACEBOOK_APP_ID", "FACEBOOK_APP_ID")
 
+
 @app.route('/')
 def index():
     """Homepage for LaterGator"""
