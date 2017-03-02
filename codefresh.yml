@@ -5,7 +5,7 @@ steps:
         type: build
         dockerfile: Dockerfile
         image-name: chloecodesthings/latergator-demo
-        tag: latergator-demo
+        tag: master
 
     push to registry:
      type: push
