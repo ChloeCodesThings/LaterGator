@@ -1,7 +1,5 @@
-FROM python:onbuild
-
-CMD source env/bin/activate
-
+FROM python:2.7
+ADD . /src
+WORKDIR /src
 CMD source bin/secrets.sh
-
-CMD ["python", "server.py", "runserver", "0.0.0.0:3000"]
+RUN pip install -r requirements.txt

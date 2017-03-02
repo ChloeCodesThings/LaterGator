@@ -2,4 +2,5 @@ env/
 .DS_Store
 *.pyc
 secrets.sh
+secrets.env
 cron.log
