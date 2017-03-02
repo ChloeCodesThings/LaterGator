@@ -3,6 +3,7 @@ from model import connect_to_db, db, User, FacebookInfo, FacebookPost, TwitterIn
 from server import app
 from passlib.hash import pbkdf2_sha256
 from flask import session
+import os
 
 
 class FlaskTestsLoggedOut(unittest.TestCase):
@@ -85,7 +86,8 @@ class FlaskTestsLoggedIn(unittest.TestCase):
         app.config['SECRET_KEY'] = "ABCDEFG"
 
         # Connect to test database
-        connect_to_db(app, "postgresql:///testdb")
+        db_uri = os.environ.get("DATABASE_URL") or "postgresql:///testdb"
+        connect_to_db(app, db_uri)
 
         # Create tables and add sample data
         db.create_all()
