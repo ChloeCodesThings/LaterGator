@@ -12,11 +12,11 @@ steps:
      candidate: ${{build-step}}
      tag: ${{CF_BRANCH}}
 
-    # unit-tests:
-    #   image: ${{build-step}}
-    #   fail-fast: false
-    #   commands:
-    #     - python tests.py
+    unit-tests:
+      image: ${{build-step}}
+      fail-fast: false
+      commands:
+        - python tests.py
 
     # composition-step:
     #   type: composition
