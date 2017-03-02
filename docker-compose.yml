@@ -1,0 +1,26 @@
+web:
+  build: .
+  command: bash -c "python model.py && python -u server.py"
+  ports:
+    - "5000:5000"
+  volumes:
+    - .:/src
+  env_file:
+  - ./secrets.env
+  links:
+    - postgres:postgres
+
+data:
+  restart: "no"
+  image: postgres:latest
+  volumes:
+    - /var/lib/postgresql
+  command: ls .
+
+postgres:
+  restart: always
+  image: postgres:latest
+  volumes_from:
+    - data
+  ports:
+    - "5432:5432"
