@@ -18,6 +18,7 @@ steps:
       fail-fast: false
       commands:
         - python tests.py
+        - echo $(date)
 
   composition-step:
     type: composition
