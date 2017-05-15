@@ -8,10 +8,10 @@ steps:
     image-name: chloecodesthings/latergator-demo
     tag: master
 
-#  push to registry:
-#    type: push
-#    candidate: ${{build-step}}
-#    tag: ${{CF_BRANCH}}
+  push to registry:
+    type: push
+    candidate: ${{build-step}}
+    tag: ${{CF_BRANCH}}
 
 #  unit-tests:
 #      image: ${{build-step}}
