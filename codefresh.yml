@@ -8,22 +8,22 @@ steps:
     image-name: chloecodesthings/latergator-demo
     tag: master
 
-  push to registry:
-    type: push
-    candidate: ${{build-step}}
-    tag: ${{CF_BRANCH}}
+#  push to registry:
+#    type: push
+#    candidate: ${{build-step}}
+#    tag: ${{CF_BRANCH}}
 
-  unit-tests:
-      image: ${{build-step}}
-      fail-fast: false
-      commands:
-        - python tests.py
-        - echo $(date)
+#  unit-tests:
+#      image: ${{build-step}}
+#      fail-fast: false
+#     commands:
+#        - python tests.py
+#        - echo $(date)
 
-  composition-step:
-    type: composition
-    composition: latergator-example
-    composition-candidates:
-      main:
-        image: nhoag/curl
-        command: bash -c "sleep 20 && curl http://app:5000/" | echo 'works'
+#  composition-step:
+#    type: composition
+#   composition: latergator-example
+#    composition-candidates:
+#      main:
+#        image: nhoag/curl
+#       command: bash -c "sleep 20 && curl http://app:5000/" | echo 'works'
